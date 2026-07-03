@@ -1,0 +1,14 @@
+[Unit]
+Description=Co-Pilot diagnostics subsystem
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/co-pilot-diagnostics
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,2 @@
+# /data partition — mounted by fstab generator or init script
+# LABEL=data  /data  ext4  defaults,noatime  0  2

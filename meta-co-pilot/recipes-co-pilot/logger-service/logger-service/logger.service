@@ -1,0 +1,14 @@
+[Unit]
+Description=Co-Pilot logger subsystem
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/co-pilot-logger
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

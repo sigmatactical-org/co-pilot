@@ -1,0 +1,30 @@
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# structure changes
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+#
+# Layer paths — adjust ${CO_PILOT_ROOT} to your checkout location
+#
+CO_PILOT_ROOT ??= "${TOPDIR}/../.."
+
+BBLAYERS ?= " \
+    ${CO_PILOT_ROOT}/meta-co-pilot \
+    ${CO_PILOT_ROOT}/../poky/meta \
+    ${CO_PILOT_ROOT}/../poky/meta-poky \
+    ${CO_PILOT_ROOT}/../poky/meta-yocto-bsp \
+    ${CO_PILOT_ROOT}/../meta-openembedded/meta-oe \
+    ${CO_PILOT_ROOT}/../meta-openembedded/meta-multimedia \
+    ${CO_PILOT_ROOT}/../meta-openembedded/meta-networking \
+    ${CO_PILOT_ROOT}/../meta-openembedded/meta-python \
+    ${CO_PILOT_ROOT}/../meta-openembedded/meta-filesystems \
+    ${CO_PILOT_ROOT}/../meta-freescale \
+    ${CO_PILOT_ROOT}/../meta-freescale-3rdparty \
+    ${CO_PILOT_ROOT}/../meta-rust \
+    ${CO_PILOT_ROOT}/../meta-clang \
+    ${CO_PILOT_ROOT}/../meta-imx/meta-bsp \
+    ${CO_PILOT_ROOT}/../meta-imx/meta-sdk \
+    ${CO_PILOT_ROOT}/../meta-rauc \
+"

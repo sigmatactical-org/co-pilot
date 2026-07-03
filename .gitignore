@@ -1,0 +1,23 @@
+# Yocto build output
+build/
+downloads/
+sstate-cache/
+tmp/
+*.lock
+
+# Generated per-developer configs (contain absolute local paths).
+# Templates are tracked as conf/*.sample and rendered by setup-environment.sh
+conf/local.conf
+conf/bblayers.conf
+
+# Signing material — never commit real keys
+keys/
+
+# Python / bitbake cruft
+*.pyc
+__pycache__/
+
+# Editor / OS
+*.swp
+*~
+.DS_Store

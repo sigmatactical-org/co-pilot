@@ -1,0 +1,14 @@
+[Unit]
+Description=Co-Pilot bluetooth subsystem
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/co-pilot-bluetooth
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

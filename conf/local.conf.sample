@@ -1,0 +1,44 @@
+#@TYPE: Machine
+#@NAME: Co-Pilot i.MX 8M Plus
+#@DESCRIPTION: Sigma motorcycle instrument cluster — i.MX 8M Plus reference
+
+MACHINE ??= "co-pilot-imx8mp"
+DISTRO ??= "co-pilot"
+
+# Source sibling instrumentation crate (default: co-pilot/instrumentation symlink)
+SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../instrumentation"
+
+#
+# Parallel build
+#
+BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()}"
+PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()}"
+
+#
+# Disk space
+#
+DL_DIR ?= "${TOPDIR}/../downloads"
+SSTATE_DIR ?= "${TOPDIR}/../sstate-cache"
+
+#
+# Production features — uncomment for release images
+#
+# DISTRO_FEATURES:append = " rauc read-only-rootfs tpm2"
+# EXTRA_IMAGE_FEATURES += " read-only-rootfs"
+
+#
+# Accept NXP EULA for i.MX BSP components (required for meta-imx)
+#
+# EULA accepts must be set per meta-imx documentation:
+# ACCEPT_FSL_EULA = "1"
+
+#
+# RAUC signing (development — replace for production)
+#
+# RAUC_KEY_FILE = "${TOPDIR}/../keys/rauc/development-key.pem"
+# RAUC_CERT_FILE = "${TOPDIR}/../keys/rauc/development-ca.cert.pem"
+
+#
+# SDK for Rust cross-development
+#
+# TOOLCHAIN_TARGET_TASK:append = " packagegroup-rust-cross-canadian-${MACHINE}"
