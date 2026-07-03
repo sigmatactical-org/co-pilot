@@ -1,6 +1,10 @@
 SUMMARY = "Sigma instrument cluster UI (instrumentation / sigma-dash)"
-HOMEPAGE = "https://github.com/sigma/embedded"
-LICENSE = "CLOSED"
+HOMEPAGE = "https://github.com/sigmatactical-org/instrumentation"
+LICENSE = "MIT | Apache-2.0"
+LIC_FILES_CHKSUM = " \
+    file://LICENSE-MIT;md5=a082e45a87ea9bc152345be779914257 \
+    file://LICENSE-APACHE;md5=d8b08026ec729e41461816aba7fc28c4 \
+"
 
 inherit cargo systemd
 
