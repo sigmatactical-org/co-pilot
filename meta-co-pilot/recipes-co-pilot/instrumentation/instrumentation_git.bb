@@ -19,11 +19,11 @@ SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 DEPENDS += " \
-    libgbm \
+    virtual/libgbm \
     libdrm \
     virtual/libgl \
     virtual/libgles2 \
-    virtual/libegl \
+    virtual/egl \
     fontconfig \
     freetype \
     libxkbcommon \

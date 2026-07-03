@@ -1,6 +1,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-# Use Co-Pilot Weston kiosk config
+# Use Co-Pilot Weston kiosk config (Wayland-only — no Xwayland)
+PACKAGECONFIG:remove = "xwayland"
 INITSCRIPT_PARAMS = "defaults 09"
 
 do_install:append() {

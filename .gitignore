@@ -1,5 +1,6 @@
 # Yocto build output
 build/
+build-virt/
 downloads/
 sstate-cache/
 tmp/

@@ -11,7 +11,7 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 | Init | systemd |
 | Display | Wayland + Weston (kiosk) |
 | UI | Rust + Slint (`sigma-dash`) |
-| BSP | NXP meta-imx (i.MX 8M Plus / i.MX 95) |
+| BSP | NXP meta-imx (i.MX 8M Plus / i.MX 95) or QEMU x86-64 (virt testing) |
 | OTA | RAUC A/B (optional, production) |
 
 ## Repository layout
@@ -41,7 +41,7 @@ Boot chain: `graphical.target` → `co-pilot-ui.target` → `weston.service` + `
 ```bash
 cd ~/Source/sigma/embedded
 
-git clone -b scarthgap git://git.yoctoproject.org/poky
+git clone -b scarthgap https://git.yoctoproject.org/poky
 git clone -b scarthgap https://github.com/openembedded/meta-openembedded
 git clone -b scarthgap https://github.com/Freescale/meta-freescale
 git clone -b scarthgap https://github.com/Freescale/meta-freescale-3rdparty
@@ -71,6 +71,24 @@ bitbake co-pilot-image
 ```
 
 Output: `build/tmp/deploy/images/co-pilot-imx8mp/co-pilot-image-co-pilot-imx8mp.wic.gz`
+
+### Virtual testing (800×480 QEMU)
+
+Run the full Co-Pilot stack locally without NXP hardware — same panel resolution as `co-pilot-imx8mp`:
+
+```bash
+source setup-environment.sh co-pilot-qemu
+bitbake co-pilot-image-virt
+./scripts/run-qemu.sh
+```
+
+Uses `build-virt/` (separate from hardware `build/`) and a slimmer layer set — no meta-imx or meta-freescale. The QEMU GTK window is fixed at **800×480**.
+
+For UI-only iteration without Yocto:
+
+```bash
+cd ../instrumentation && cargo virt
+```
 
 ### 4. Flash
 
@@ -125,6 +143,12 @@ Desktop dev (windowed):
 
 ```bash
 cd ../instrumentation && cargo run --bin sigma-dash
+```
+
+Panel-accurate local testing (800×480, matches imx8mp / QEMU virt):
+
+```bash
+cd ../instrumentation && cargo virt
 ```
 
 Target kiosk (fullscreen, set automatically when built with `--cfg co_pilot_embedded` or `SLINT_FULLSCREEN=1`):

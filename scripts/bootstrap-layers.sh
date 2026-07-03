@@ -26,18 +26,37 @@ echo "  YOCTO_BASE=${YOCTO_BASE}"
 echo "  branch=${BRANCH}"
 echo
 
-clone poky "git://git.yoctoproject.org/poky"
+clone poky "https://git.yoctoproject.org/poky"
 clone meta-openembedded "https://github.com/openembedded/meta-openembedded"
-clone meta-freescale "https://github.com/Freescale/meta-freescale"
-clone meta-freescale-3rdparty "https://github.com/Freescale/meta-freescale-3rdparty"
 clone meta-rust "https://github.com/meta-rust/meta-rust"
 clone meta-clang "https://github.com/kraj/meta-clang"
 clone meta-rauc "https://github.com/rauc/meta-rauc"
+
+VIRT_ONLY="${1:-}"
+if [[ "${VIRT_ONLY}" != "--virt-only" ]]; then
+    clone meta-freescale "https://github.com/Freescale/meta-freescale"
+    clone meta-freescale-3rdparty "https://github.com/Freescale/meta-freescale-3rdparty"
+fi
 
 cat <<EOF
 
 Required open-source layers cloned.
 
+EOF
+
+if [[ "${VIRT_ONLY}" == "--virt-only" ]]; then
+    cat <<EOF
+Virtual target (co-pilot-qemu) — meta-imx / Freescale BSP not required.
+
+Initialize and build:
+  cd ${CO_PILOT_ROOT}
+  source setup-environment.sh co-pilot-qemu
+  bitbake co-pilot-image-virt
+  ./scripts/run-qemu.sh
+
+EOF
+else
+    cat <<EOF
 Still required (NXP account):
   meta-imx — download the Scarthgap i.MX BSP bundle from NXP and extract to:
     ${YOCTO_BASE}/meta-imx
@@ -46,8 +65,13 @@ Then initialize the build environment:
   cd ${CO_PILOT_ROOT}
   source setup-environment.sh co-pilot-imx8mp
 
+Virtual testing (no NXP BSP):
+  ${CO_PILOT_ROOT}/scripts/bootstrap-layers.sh --virt-only
+  source setup-environment.sh co-pilot-qemu
+
 EOF
 
-if [[ ! -d "${YOCTO_BASE}/meta-imx/meta-bsp" ]]; then
-    echo "note: meta-imx not present yet — needed before bitbake co-pilot-image" >&2
+    if [[ ! -d "${YOCTO_BASE}/meta-imx/meta-bsp" ]]; then
+        echo "note: meta-imx not present yet — needed for hardware bitbake, not for co-pilot-qemu" >&2
+    fi
 fi

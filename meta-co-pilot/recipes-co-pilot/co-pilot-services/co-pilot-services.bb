@@ -4,6 +4,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = " \
     file://weston.ini \
+    file://weston-qemu.ini \
     file://co-pilot-weston.sh \
     file://co-pilot-tmpfiles.conf \
     file://co-pilot-fstab.data \
@@ -12,6 +13,8 @@ SRC_URI = " \
 
 S = "${WORKDIR}"
 
+WESTON_INI = "${@bb.utils.contains('MACHINE', 'co-pilot-qemu', 'weston-qemu.ini', 'weston.ini', d)}"
+
 inherit systemd
 
 SYSTEMD_SERVICE:${PN} = "co-pilot-ui.target"
@@ -19,7 +22,7 @@ SYSTEMD_AUTO_ENABLE = "enable"
 
 do_install() {
     install -d ${D}${sysconfdir}/xdg/weston
-    install -m 0644 ${WORKDIR}/weston.ini ${D}${sysconfdir}/xdg/weston/co-pilot.ini
+    install -m 0644 ${WORKDIR}/${WESTON_INI} ${D}${sysconfdir}/xdg/weston/co-pilot.ini
 
     install -d ${D}${bindir}
     install -m 0755 ${WORKDIR}/co-pilot-weston.sh ${D}${bindir}/co-pilot-weston

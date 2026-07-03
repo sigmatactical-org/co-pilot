@@ -30,16 +30,21 @@ CO_PILOT_ROOT="${SCRIPT_DIR}"
 EMBEDDED_ROOT="$(cd "${CO_PILOT_ROOT}/.." && pwd)"
 YOCTO_BASE="${YOCTO_BASE:-${EMBEDDED_ROOT}}"
 POKY_DIR="${YOCTO_BASE}/poky"
-BUILD_DIR="${CO_PILOT_ROOT}/build"
 MACHINE="${1:-co-pilot-imx8mp}"
-BUILD_DIR="${2:-${BUILD_DIR}}"
+if [[ -n "${2:-}" ]]; then
+    BUILD_DIR="${2}"
+elif [[ "${MACHINE}" == "co-pilot-qemu" ]]; then
+    BUILD_DIR="${CO_PILOT_ROOT}/build-virt"
+else
+    BUILD_DIR="${CO_PILOT_ROOT}/build"
+fi
 
 usage() {
     cat <<EOF
 Usage: source setup-environment.sh [MACHINE] [build-dir]
 
-  MACHINE     co-pilot-imx8mp (default) | co-pilot-imx95
-  build-dir   ${BUILD_DIR} (default)
+  MACHINE     co-pilot-imx8mp (default) | co-pilot-imx95 | co-pilot-qemu
+  build-dir   build (hardware) or build-virt (co-pilot-qemu default)
 
 Environment:
   YOCTO_BASE  Directory containing poky and meta layers (default: ${EMBEDDED_ROOT})
@@ -47,9 +52,14 @@ Environment:
 First-time setup — clone Yocto layers:
   ${CO_PILOT_ROOT}/scripts/bootstrap-layers.sh
 
-Then initialize the build directory:
-  cd ${CO_PILOT_ROOT}
-  source setup-environment.sh ${MACHINE}
+Hardware build:
+  source setup-environment.sh co-pilot-imx8mp
+  bitbake co-pilot-image
+
+Virtual testing (800×480 QEMU, no NXP BSP):
+  source setup-environment.sh co-pilot-qemu
+  bitbake co-pilot-image-virt
+  ${CO_PILOT_ROOT}/scripts/run-qemu.sh
 
 EOF
 }
@@ -74,28 +84,39 @@ Or set YOCTO_BASE to the directory that contains poky/, then re-run:
   source setup-environment.sh ${MACHINE}
 
 EOF
-    _co_pilot_fail "missing poky checkout"
+    _co_pilot_fail "missing poky checkout" || return 1
 fi
 
 if [[ ! -f "${POKY_DIR}/oe-init-build-env" ]]; then
-    _co_pilot_fail "invalid poky checkout (oe-init-build-env not found in ${POKY_DIR})"
+    _co_pilot_fail "invalid poky checkout (oe-init-build-env not found in ${POKY_DIR})" || return 1
+fi
+
+# Seed Co-Pilot conf before oe-init-build-env (otherwise Poky default local.conf wins)
+if [[ "${MACHINE}" == "co-pilot-qemu" ]]; then
+    _local_sample="${CO_PILOT_ROOT}/conf/local.conf.virt.sample"
+    _bblayers_sample="${CO_PILOT_ROOT}/conf/bblayers-virt.conf.sample"
+else
+    _local_sample="${CO_PILOT_ROOT}/conf/local.conf.sample"
+    _bblayers_sample="${CO_PILOT_ROOT}/conf/bblayers.conf.sample"
+fi
+
+mkdir -p "${BUILD_DIR}/conf"
+
+if [[ ! -f "${BUILD_DIR}/conf/local.conf" ]]; then
+    cp "${_local_sample}" "${BUILD_DIR}/conf/local.conf"
+fi
+
+if [[ ! -f "${BUILD_DIR}/conf/bblayers.conf" ]] \
+    || ! grep -q meta-co-pilot "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null; then
+    sed "s|\${CO_PILOT_ROOT}|${CO_PILOT_ROOT}|g" \
+        "${_bblayers_sample}" > "${BUILD_DIR}/conf/bblayers.conf"
 fi
 
 # oe-init-build-env must be sourced; it sets PATH, BBPATH, and cd's into build/
 # shellcheck source=/dev/null
-source "${POKY_DIR}/oe-init-build-env" "${BUILD_DIR}" || _co_pilot_fail "oe-init-build-env failed"
+source "${POKY_DIR}/oe-init-build-env" "${BUILD_DIR}" || { _co_pilot_fail "oe-init-build-env failed"; return 1; }
 
-# Seed configuration on first run
-if [[ ! -f conf/local.conf ]]; then
-    cp "${CO_PILOT_ROOT}/conf/local.conf.sample" conf/local.conf
-fi
-
-if [[ ! -f conf/bblayers.conf ]] || ! grep -q meta-co-pilot conf/bblayers.conf 2>/dev/null; then
-    sed "s|\${CO_PILOT_ROOT}|${CO_PILOT_ROOT}|g" \
-        "${CO_PILOT_ROOT}/conf/bblayers.conf.sample" > conf/bblayers.conf
-fi
-
-# Ensure machine and distro are set
+# Ensure machine and distro match the requested target
 if ! grep -q '^MACHINE' conf/local.conf; then
     echo "MACHINE = \"${MACHINE}\"" >> conf/local.conf
 else
@@ -103,18 +124,29 @@ else
 fi
 
 if ! grep -q '^DISTRO' conf/local.conf; then
-    echo "DISTRO = \"co-pilot\"" >> conf/local.conf
+    echo 'DISTRO = "co-pilot"' >> conf/local.conf
+else
+    sed -i 's/^DISTRO.*/DISTRO = "co-pilot"/' conf/local.conf
 fi
 
 # BitBake reads machine layers from BBLAYERS — warn about missing optional layers
 _missing_layers=()
-for _layer in \
-    "${YOCTO_BASE}/meta-openembedded/meta-oe" \
-    "${YOCTO_BASE}/meta-freescale" \
-    "${YOCTO_BASE}/meta-rust" \
-    "${YOCTO_BASE}/meta-rauc" \
-    "${YOCTO_BASE}/meta-imx/meta-bsp"
-do
+if [[ "${MACHINE}" == "co-pilot-qemu" ]]; then
+    _required_layers=(
+        "${YOCTO_BASE}/meta-openembedded/meta-oe"
+        "${YOCTO_BASE}/meta-rust"
+        "${YOCTO_BASE}/meta-rauc"
+    )
+else
+    _required_layers=(
+        "${YOCTO_BASE}/meta-openembedded/meta-oe"
+        "${YOCTO_BASE}/meta-freescale"
+        "${YOCTO_BASE}/meta-rust"
+        "${YOCTO_BASE}/meta-rauc"
+        "${YOCTO_BASE}/meta-imx/meta-bsp"
+    )
+fi
+for _layer in "${_required_layers[@]}"; do
     if [[ ! -d "${_layer}" ]]; then
         _missing_layers+=("${_layer}")
     fi
@@ -133,6 +165,14 @@ Build image:
 
 EOF
 
+if [[ "${MACHINE}" == "co-pilot-qemu" ]]; then
+    cat <<EOF
+Run in QEMU (800×480 window):
+  ${CO_PILOT_ROOT}/scripts/run-qemu.sh
+
+EOF
+fi
+
 if ((${#_missing_layers[@]} > 0)); then
     echo "warning: missing layer checkouts (bitbake will fail until these exist):" >&2
     for _layer in "${_missing_layers[@]}"; do
@@ -140,6 +180,7 @@ if ((${#_missing_layers[@]} > 0)); then
     done
     echo "Run: ${CO_PILOT_ROOT}/scripts/bootstrap-layers.sh" >&2
     echo >&2
+    _co_pilot_fail "missing required Yocto layers" || return 1
 fi
 
 if (( _CO_PILOT_SETUP_SOURCED )); then

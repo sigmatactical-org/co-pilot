@@ -47,7 +47,7 @@ RDEPENDS:${PN}-vehicle = " \
 
 RDEPENDS:${PN}-navigation = " \
     gpsd \
-    gpsd-clients \
+    gps-utils \
     navigation-service \
     gps-service \
 "
@@ -61,7 +61,6 @@ RDEPENDS:${PN}-connectivity = " \
 "
 
 RDEPENDS:${PN}-diagnostics = " \
-    systemd-coredump \
     strace \
     htop \
     logger-service \

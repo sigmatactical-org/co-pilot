@@ -8,6 +8,8 @@ PACKAGECONFIG:append:pn-weston = " kiosk systemd"
 # Slint uses FemtoVG with OpenGL ES on embedded targets
 PREFERRED_RPROVIDER_libEGL = "libegl-imx"
 PREFERRED_RPROVIDER_libGLESv2 = "libgles-imx"
+PREFERRED_RPROVIDER_libEGL:virt = "mesa"
+PREFERRED_RPROVIDER_libGLESv2:virt = "mesa"
 
 # Font rendering for Slint UI
 IMAGE_INSTALL:append = " \

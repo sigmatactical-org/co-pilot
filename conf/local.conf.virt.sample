@@ -1,0 +1,33 @@
+#@TYPE: Machine
+#@NAME: Co-Pilot QEMU (virtual)
+#@DESCRIPTION: Local integration testing — 800×480 cluster panel in QEMU x86-64
+
+MACHINE ??= "co-pilot-qemu"
+DISTRO ??= "co-pilot"
+
+# Source sibling instrumentation crate (default: co-pilot/instrumentation symlink)
+SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../instrumentation"
+
+#
+# Parallel build
+#
+BB_NUMBER_THREADS ?= "${@oe.utils.cpu_count()}"
+PARALLEL_MAKE ?= "-j ${@oe.utils.cpu_count()}"
+
+#
+# Disk space — share caches with hardware builds when possible
+#
+DL_DIR ?= "${TOPDIR}/../downloads"
+SSTATE_DIR ?= "${TOPDIR}/../sstate-cache"
+
+#
+# Production features — optional on virt; enable to exercise OTA paths
+#
+# DISTRO_FEATURES:append = " rauc read-only-rootfs tpm2"
+# EXTRA_IMAGE_FEATURES += " read-only-rootfs"
+
+#
+# RAUC signing (development — replace for production)
+#
+# RAUC_KEY_FILE = "${TOPDIR}/../keys/rauc/development-key.pem"
+# RAUC_CERT_FILE = "${TOPDIR}/../keys/rauc/development-ca.cert.pem"
