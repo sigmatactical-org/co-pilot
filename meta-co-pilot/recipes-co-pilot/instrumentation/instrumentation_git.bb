@@ -17,7 +17,7 @@ SRC_URI = " \
 # After SRC_URI assignment — crates.inc uses SRC_URI +=
 require ${THISDIR}/instrumentation-crates.inc
 
-SRCREV = "8a97ff37495d3d5cb37b1a39315c7563014d7b13"
+SRCREV = "32d2ce22de1b2ce5fee93f09749d8efd1bd2dcc2"
 
 S = "${WORKDIR}/git"
 
@@ -37,7 +37,7 @@ DEPENDS += " \
 export SLINT_BACKEND = "femtovg"
 export RUSTFLAGS:append = " --cfg co_pilot_embedded"
 
-CARGO_BUILD_FLAGS:append = " --bin sigma-dash"
+CARGO_BUILD_FLAGS:append = " -p sigma-racer --bin sigma-dash"
 
 SYSTEMD_SERVICE:${PN} = "cluster-ui.service"
 SYSTEMD_AUTO_ENABLE = "enable"
@@ -47,9 +47,9 @@ do_install() {
     install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/sigma-dash ${D}${bindir}/sigma-dash
 
     install -d ${D}${systemd_system_unitdir}
-    install -m 0644 ${UNPACKDIR}/cluster-ui.service ${D}${systemd_system_unitdir}/cluster-ui.service
+    install -m 0644 ${WORKDIR}/cluster-ui.service ${D}${systemd_system_unitdir}/cluster-ui.service
     install -d ${D}${sysconfdir}/co-pilot
-    install -m 0644 ${UNPACKDIR}/co-pilot-ui.env ${D}${sysconfdir}/co-pilot/ui.env
+    install -m 0644 ${WORKDIR}/co-pilot-ui.env ${D}${sysconfdir}/co-pilot/ui.env
 }
 
 FILES:${PN} += " \
