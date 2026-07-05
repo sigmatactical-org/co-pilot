@@ -1,0 +1,172 @@
+# M7 safety core → SocketCAN draft frame map (first draft)
+#
+# Canonical DBC: schemas/can/m7-draft.dbc (used by co-pilot-telemetry via dbc-rs).
+# YAML mirror below for VSS mapping docs; keep in sync with the DBC.
+#
+# vehicle.service decodes these frames and publishes VSS paths (see
+# schemas/vss/sigma-cluster.vspec) on the telemetry socket.
+
+version: 0.1
+bus: can0
+bitrate: 1000000
+fd: true
+
+frames:
+
+  - id: 0x0A0
+    name: ENGINE_STATUS
+    dlc: 8
+    rate_hz: 100
+    description: Engine RPM, coolant, oil temperature.
+    signals:
+      - name: EngineRPM
+        start: 0
+        length: 16
+        byte_order: little_endian
+        factor: 1
+        offset: 0
+        unit: rpm
+        vss: Vehicle.Powertrain.CombustionEngine.Speed
+      - name: CoolantTemp
+        start: 16
+        length: 8
+        factor: 1
+        offset: -40
+        unit: celsius
+        vss: Vehicle.OBD.CoolantTemperature
+      - name: OilTemp
+        start: 24
+        length: 8
+        factor: 1
+        offset: -40
+        unit: celsius
+        vss: Vehicle.OBD.OilTemperature
+      - name: Redline
+        start: 32
+        length: 1
+        vss: Vehicle.Powertrain.CombustionEngine.IsRedline
+
+  - id: 0x0C0
+    name: THROTTLE_GEAR
+    dlc: 8
+    rate_hz: 100
+    description: Throttle position, gear, riding mode, side stand.
+    signals:
+      - name: ThrottlePos
+        start: 0
+        length: 10
+        factor: 0.1
+        offset: 0
+        unit: percent
+        vss: null  # not displayed on cluster v1
+      - name: CurrentGear
+        start: 16
+        length: 4
+        vss: Vehicle.Powertrain.Transmission.CurrentGear
+      - name: PerformanceMode
+        start: 20
+        length: 3
+        value_table:
+          0: RAIN
+          1: STD
+          2: SPORT
+          3: TRACK
+        vss: Vehicle.Powertrain.Transmission.PerformanceMode
+      - name: SideStand
+        start: 24
+        length: 1
+        vss: Vehicle.Body.IsSideStandEngaged
+
+  - id: 0x120
+    name: WHEEL_SPEED
+    dlc: 8
+    rate_hz: 50
+    description: Wheel speed and derived ground speed.
+    signals:
+      - name: GroundSpeed
+        start: 0
+        length: 16
+        factor: 0.1
+        offset: 0
+        unit: km/h
+        vss: Vehicle.Speed
+      - name: LeanAngle
+        start: 16
+        length: 12
+        factor: 0.1
+        offset: -90
+        unit: deg
+        vss: Vehicle.Acceleration.Lateral
+      - name: LongAccel
+        start: 28
+        length: 12
+        factor: 0.01
+        offset: -20
+        unit: g
+        vss: Vehicle.Acceleration.Longitudinal
+
+  - id: 0x200
+    name: CHASSIS_ELECTRICAL
+    dlc: 8
+    rate_hz: 10
+    description: Fuel, battery, bus load, ABS/TC flags.
+    signals:
+      - name: FuelLevel
+        start: 0
+        length: 8
+        factor: 0.5
+        offset: 0
+        unit: percent
+        vss: Vehicle.FuelSystem.Level
+      - name: BatteryVoltage
+        start: 8
+        length: 12
+        factor: 0.01
+        offset: 0
+        unit: V
+        vss: Vehicle.ElectricalSystem.Battery.Voltage
+      - name: CanBusLoad
+        start: 20
+        length: 7
+        unit: percent
+        vss: Vehicle.Cabin.Infotainment.CanBusLoad
+      - name: AbsActive
+        start: 27
+        length: 1
+        vss: Vehicle.ADAS.ABS.IsActive
+      - name: TcActive
+        start: 28
+        length: 1
+        vss: Vehicle.ADAS.TCS.IsActive
+      - name: DtcCount
+        start: 32
+        length: 8
+        vss: Vehicle.OBD.DTCCount
+
+  - id: 0x220
+    name: TRIP_ODOMETER
+    dlc: 8
+    rate_hz: 1
+    description: Odometer and trip meters.
+    signals:
+      - name: Odometer
+        start: 0
+        length: 24
+        factor: 0.1
+        offset: 0
+        unit: km
+        vss: Vehicle.TraveledDistance
+      - name: Trip1
+        start: 24
+        length: 20
+        factor: 0.1
+        offset: 0
+        unit: km
+        vss: Vehicle.TripMeter1
+      - name: Trip2
+        start: 44
+        length: 20
+        factor: 0.1
+        offset: 0
+        unit: km
+        vss: Vehicle.TripMeter2

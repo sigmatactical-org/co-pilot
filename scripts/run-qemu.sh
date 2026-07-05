@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
-# Boot a co-pilot-qemu image in a fixed 800×480 GTK window.
+# Boot a co-pilot-qemu image in an 800×480 window.
 #
 # Prerequisites:
 #   source setup-environment.sh co-pilot-qemu
 #   bitbake co-pilot-image-virt
 #
-# Usage (works from any directory):
+# Yocto's qemu-system-native is often headless-only (no gtk/sdl). This script
+# falls back to the host qemu-system-x86 package when needed:
+#   sudo apt install qemu-system-x86
+#
+# Usage (works from any directory after sourcing setup-environment):
 #   /path/to/co-pilot/scripts/run-qemu.sh [runqemu extra args...]
 
 set -euo pipefail
@@ -15,6 +19,8 @@ CO_PILOT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 BUILD_DIR="${CO_PILOT_ROOT}/build-virt"
 DEPLOY_DIR="${BUILD_DIR}/tmp/deploy/images/co-pilot-qemu"
 ROOTFS="${DEPLOY_DIR}/co-pilot-image-virt-co-pilot-qemu.rootfs.ext4"
+QBCONF="${DEPLOY_DIR}/co-pilot-image-virt-co-pilot-qemu.rootfs.qemuboot.conf"
+YOCTO_QEMU="${BUILD_DIR}/tmp/work/x86_64-linux/qemu-helper-native/1.0/recipe-sysroot-native/usr/bin/qemu-system-x86_64"
 
 if [[ ! -f "${ROOTFS}" ]]; then
     echo "error: ${ROOTFS} not found" >&2
@@ -28,8 +34,50 @@ if ! command -v runqemu >/dev/null 2>&1; then
     exit 1
 fi
 
+qemu_has_window_display() {
+    local qemu="$1"
+    [[ -x "${qemu}" ]] || return 1
+    local help
+    help="$("${qemu}" -display help 2>&1)" || return 1
+    grep -qE '(^|[[:space:]])(sdl|gtk)([[:space:]]|$)' <<< "${help}"
+}
+
+host_qemu="$(command -v qemu-system-x86_64 2>/dev/null || true)"
+use_qbconf="${QBCONF}"
+tmp_qbconf=""
+
+if [[ -x "${YOCTO_QEMU}" ]] && ! qemu_has_window_display "${YOCTO_QEMU}"; then
+    if [[ -z "${host_qemu}" ]] || ! qemu_has_window_display "${host_qemu}"; then
+        cat >&2 <<EOF
+error: no QEMU with sdl/gtk display found.
+
+Yocto QEMU (${YOCTO_QEMU}) is headless-only. Install host QEMU:
+  sudo apt install qemu-system-x86
+
+Then re-run this script. To rebuild Yocto QEMU with sdl instead:
+  bitbake qemu-system-native -c cleansstate && bitbake qemu-system-native
+EOF
+        exit 1
+    fi
+    host_bindir="$(dirname "${host_qemu}")"
+    tmp_qbconf="$(mktemp)"
+    sed "s|^staging_bindir_native = .*|staging_bindir_native = ${host_bindir}|" \
+        "${QBCONF}" > "${tmp_qbconf}"
+    use_qbconf="${tmp_qbconf}"
+    trap 'rm -f "${tmp_qbconf}"' EXIT
+fi
+
 cd "${BUILD_DIR}"
 
-# Pass the rootfs file explicitly — avoids runqemu lazy-rootfs / IMAGE_LINK_NAME bugs
-# when given recipe names like co-pilot-image-virt.
-exec runqemu co-pilot-qemu "${ROOTFS}" slirp "$@"
+# Kill stale instances that hold the rootfs write lock.
+# pgrep -x misses qemu-system-x86_64 (name truncated to 15 chars on Linux).
+if pgrep -f "${ROOTFS}" >/dev/null 2>&1; then
+    echo "warning: stopping existing QEMU using ${ROOTFS}" >&2
+    pkill -f "${ROOTFS}" || true
+    sleep 2
+fi
+
+# novga skips runqemu's virtio-vga but also skips -display; add both via qemuparams.
+# serialstdio: boot log on the host terminal, not tiny text in the SDL window.
+exec runqemu co-pilot-qemu "${ROOTFS}" "${use_qbconf}" sdl slirp novga serialstdio \
+    'qemuparams=-display sdl,show-cursor=on -device virtio-gpu-pci' "$@"

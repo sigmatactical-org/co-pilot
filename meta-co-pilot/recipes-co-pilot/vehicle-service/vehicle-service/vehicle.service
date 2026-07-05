@@ -6,6 +6,7 @@ Wants=network.target
 
 [Service]
 Type=simple
+EnvironmentFile=-/etc/co-pilot/vehicle.env
 ExecStart=/usr/bin/co-pilot-vehicle
 Restart=on-failure
 RestartSec=2

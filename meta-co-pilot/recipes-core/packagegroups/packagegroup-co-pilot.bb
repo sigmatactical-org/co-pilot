@@ -31,6 +31,7 @@ RDEPENDS:${PN}-core = " \
 RDEPENDS:${PN}-graphics = " \
     weston \
     weston-init \
+    seatd \
     co-pilot-services \
     instrumentation \
     liberation-fonts \

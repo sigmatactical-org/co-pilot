@@ -1,0 +1,168 @@
+# Co-Pilot vehicle telemetry IPC — message definitions (first draft v0.1)
+#
+# vehicle.service publishes on a Unix stream socket; cluster-ui (sigma-dash) subscribes.
+# All payloads reference VSS paths from schemas/vss/sigma-cluster.vspec.
+#
+# Socket (planned): /run/co-pilot/vehicle.sock
+# Encoding: JSON (default) or CBOR (Content-Type: application/cbor)
+
+version: 0.1
+socket: /run/co-pilot/vehicle.sock
+
+envelope:
+  description: Common wrapper for every frame on the wire.
+  fields:
+    version:
+      type: string
+      const: "0.1"
+    msg:
+      type: string
+      description: Message type name (see messages below).
+    ts:
+      type: string
+      format: date-time
+      description: ISO-8601 UTC timestamp of sample or event.
+    seq:
+      type: uint64
+      description: Monotonic sequence number from vehicle.service.
+
+messages:
+
+  Snapshot:
+    description: |
+      Full Tier-1 instrument state. Sent on connect and periodically (~10 Hz)
+      so late-joining UI clients converge without replaying CAN history.
+    rate_hz: 10
+    signals:
+      - vss: Vehicle.Speed
+        ui: speed
+      - vss: Vehicle.Powertrain.CombustionEngine.Speed
+        ui: rpm
+      - vss: Vehicle.Powertrain.Transmission.CurrentGear
+        ui: gear
+      - vss: Vehicle.Powertrain.CombustionEngine.IsRedline
+        ui: at-redline
+      - vss: Vehicle.Body.IsSideStandEngaged
+        ui: side-stand
+      - vss: Vehicle.Powertrain.Transmission.PerformanceMode
+        ui: riding-mode
+      - vss: Vehicle.FuelSystem.Level
+        ui: fuel-pct
+      - vss: Vehicle.OBD.CoolantTemperature
+        ui: coolant-c
+      - vss: Vehicle.OBD.OilTemperature
+        ui: oil-c
+      - vss: Vehicle.TraveledDistance
+        ui: odometer
+      - vss: Vehicle.TripMeter1
+        ui: trip1
+      - vss: Vehicle.TripMeter2
+        ui: trip2
+      - vss: Vehicle.Acceleration.Lateral
+        ui: lean-angle
+      - vss: Vehicle.Acceleration.Longitudinal
+        ui: gforce
+      - vss: Vehicle.ElectricalSystem.Battery.Voltage
+        ui: battery-v
+      - vss: Vehicle.Cabin.Infotainment.CanBusLoad
+        ui: can-load
+      - vss: Vehicle.OBD.DTCCount
+        ui: dtc
+      - vss: Vehicle.ADAS.ABS.IsActive
+        ui: abs-active
+      - vss: Vehicle.ADAS.TCS.IsActive
+        ui: tc-active
+    example:
+      version: "0.1"
+      msg: Snapshot
+      ts: "2026-07-05T20:00:00.000Z"
+      seq: 1042
+      data:
+        Vehicle.Speed: 0
+        Vehicle.Powertrain.CombustionEngine.Speed: 1200
+        Vehicle.Powertrain.Transmission.CurrentGear: 0
+        Vehicle.Powertrain.CombustionEngine.IsRedline: false
+        Vehicle.Body.IsSideStandEngaged: true
+        Vehicle.Powertrain.Transmission.PerformanceMode: SPORT
+        Vehicle.FuelSystem.Level: 62
+        Vehicle.OBD.CoolantTemperature: 42
+        Vehicle.OBD.OilTemperature: 52
+        Vehicle.TraveledDistance: 1245
+        Vehicle.TripMeter1: 137.4
+        Vehicle.TripMeter2: 42.1
+        Vehicle.Acceleration.Lateral: 0
+        Vehicle.Acceleration.Longitudinal: 0
+        Vehicle.ElectricalSystem.Battery.Voltage: 13.1
+        Vehicle.Cabin.Infotainment.CanBusLoad: 8
+        Vehicle.OBD.DTCCount: 0
+        Vehicle.ADAS.ABS.IsActive: false
+        Vehicle.ADAS.TCS.IsActive: false
+
+  SignalUpdate:
+    description: |
+      One or more changed VSS paths. Used for high-rate signals (engine, wheel)
+      between Snapshot frames. Batch up to 16 paths per frame.
+    rate_hz: "50–100 (source-dependent)"
+    fields:
+      data:
+        type: object
+        description: Map of VSS path → typed value.
+    example:
+      version: "0.1"
+      msg: SignalUpdate
+      ts: "2026-07-05T20:00:00.010Z"
+      seq: 1043
+      data:
+        Vehicle.Powertrain.CombustionEngine.Speed: 3250
+        Vehicle.Speed: 48
+
+  Event:
+    description: Edge-triggered warnings and mode changes (not sampled every frame).
+    fields:
+      event:
+        type: string
+        enum:
+          - side_stand_engaged
+          - side_stand_retracted
+          - redline_enter
+          - redline_exit
+          - dtc_set
+          - dtc_clear
+          - abs_active
+          - tc_active
+          - fuel_reserve
+          - riding_mode_changed
+      vss:
+        type: string
+        description: Primary VSS path associated with the event.
+      value:
+        description: Optional payload (DTC code, new mode string, etc.).
+    example:
+      version: "0.1"
+      msg: Event
+      ts: "2026-07-05T20:00:01.500Z"
+      seq: 1100
+      event: redline_enter
+      vss: Vehicle.Powertrain.CombustionEngine.IsRedline
+      value: true
+
+  Heartbeat:
+    description: vehicle.service liveness; no VSS data.
+    rate_hz: 1
+    fields:
+      uptime_ms:
+        type: uint64
+    example:
+      version: "0.1"
+      msg: Heartbeat
+      ts: "2026-07-05T20:00:02.000Z"
+      seq: 1101
+      uptime_ms: 45000
+
+  Goodbye:
+    description: Sent before vehicle.service exit so UI can show stale-data banner.
+    example:
+      version: "0.1"
+      msg: Goodbye
+      ts: "2026-07-05T20:05:00.000Z"
+      seq: 9999

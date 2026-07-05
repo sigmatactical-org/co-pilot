@@ -1,8 +1,9 @@
 [Unit]
 Description=Sigma Instrument Cluster UI (instrumentation)
 Documentation=file:/usr/share/doc/instrumentation/README
-After=weston.service
+After=weston.service vehicle.service
 Requires=weston.service
+Wants=vehicle.service
 PartOf=co-pilot-ui.target
 Conflicts=getty@tty7.service
 
@@ -10,16 +11,16 @@ Conflicts=getty@tty7.service
 Type=simple
 User=cluster
 Group=cluster
+SupplementaryGroups=wayland render video input
 EnvironmentFile=-/etc/co-pilot/ui.env
 ExecStartPre=/bin/mkdir -p /run/user/cluster
 ExecStartPre=/bin/chown cluster:cluster /run/user/cluster
 ExecStart=/usr/bin/sigma-dash
 Restart=always
 RestartSec=1
-WatchdogSec=30
 StandardOutput=journal
 StandardError=journal
-StartLimitIntervalSec=60
+StartLimitInterval=60
 StartLimitBurst=10
 
 [Install]

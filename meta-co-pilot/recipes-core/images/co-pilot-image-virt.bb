@@ -9,6 +9,7 @@ inherit core-image
 IMAGE_FEATURES += " \
     ssh-server-openssh \
     tools-debug \
+    debug-tweaks \
 "
 
 IMAGE_FEATURES:remove = "splash hwcodec"
@@ -17,6 +18,7 @@ IMAGE_INSTALL = " \
     packagegroup-co-pilot-core \
     packagegroup-co-pilot-graphics \
     co-pilot-services \
+    vehicle-service \
     instrumentation \
     ${CORE_IMAGE_EXTRA_INSTALL} \
 "

@@ -6,18 +6,23 @@ LIC_FILES_CHKSUM = " \
     file://LICENSE-APACHE;md5=d8b08026ec729e41461816aba7fc28c4 \
 "
 
-inherit cargo cargo-update-recipe-crates systemd
+inherit cargo cargo-update-recipe-crates systemd externalsrc
+
+EXTERNALSRC = "${SIGMA_INSTRUMENTATION_SRC}"
 
 SRC_URI = " \
     git://github.com/sigmatactical-org/instrumentation.git;protocol=https;branch=main;name=instrumentation;nobranch=1 \
     file://cluster-ui.service \
     file://co-pilot-ui.env \
+    file://co-pilot-ui-qemu.env \
 "
+
+UI_ENV = "${@bb.utils.contains('MACHINE', 'co-pilot-qemu', 'co-pilot-ui-qemu.env', 'co-pilot-ui.env', d)}"
 
 # After SRC_URI assignment — crates.inc uses SRC_URI +=
 require ${THISDIR}/instrumentation-crates.inc
 
-SRCREV = "32d2ce22de1b2ce5fee93f09749d8efd1bd2dcc2"
+SRCREV = "e81cd1206e2a23f6fbb9cae678616a47760467a3"
 
 S = "${WORKDIR}/git"
 
@@ -49,7 +54,7 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/cluster-ui.service ${D}${systemd_system_unitdir}/cluster-ui.service
     install -d ${D}${sysconfdir}/co-pilot
-    install -m 0644 ${WORKDIR}/co-pilot-ui.env ${D}${sysconfdir}/co-pilot/ui.env
+    install -m 0644 ${WORKDIR}/${UI_ENV} ${D}${sysconfdir}/co-pilot/ui.env
 }
 
 FILES:${PN} += " \

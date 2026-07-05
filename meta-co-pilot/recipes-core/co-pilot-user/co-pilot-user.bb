@@ -6,7 +6,7 @@ inherit useradd
 ALLOW_EMPTY:${PN} = "1"
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM:${PN} = "-r -s /bin/false -d /var/lib/cluster -g ${CO_PILOT_GROUP} ${CO_PILOT_USER}"
-GROUPADD_PARAM:${PN} = "-r ${CO_PILOT_GROUP}"
+USERADD_PARAM:${PN} = "-r -s /bin/false -d /var/lib/cluster -g ${CO_PILOT_GROUP} -G wayland,render,video ${CO_PILOT_USER}"
+GROUPADD_PARAM:${PN} = "-r ${CO_PILOT_GROUP}; -r wayland; -r render"
 
 do_install[noexec] = "1"

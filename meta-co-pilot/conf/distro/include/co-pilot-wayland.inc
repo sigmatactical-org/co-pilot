@@ -3,7 +3,7 @@
 DISTRO_FEATURES:append = " wayland"
 
 # Weston runs on tty7 in kiosk mode; cluster UI is launched via systemd
-PACKAGECONFIG:append:pn-weston = " kiosk systemd"
+PACKAGECONFIG:append:pn-weston = " shell-desktop systemd"
 
 # Slint uses FemtoVG with OpenGL ES on embedded targets
 PREFERRED_RPROVIDER_libEGL = "libegl-imx"
