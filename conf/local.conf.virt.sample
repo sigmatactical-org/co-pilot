@@ -2,11 +2,11 @@
 #@NAME: Sigma Racer Wingman QEMU (virtual)
 #@DESCRIPTION: Local integration testing — 800×480 cluster panel in QEMU x86-64
 
-MACHINE ??= "sigmaracer-wingman-qemu"
-DISTRO ??= "sigmaracer-wingman"
+MACHINE ??= "sigma-racer-wingman-qemu"
+DISTRO ??= "sigma-racer-wingman"
 
-# Source sibling instrumentation crate (default: sigmaracer-wingman/sigmaracer-instrumentation symlink)
-SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigmaracer-instrumentation"
+# Source sibling instrumentation crate (default: sigma-racer-wingman/sigma-instrumentation symlink)
+SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigma-instrumentation"
 
 #
 # Parallel build

@@ -6,7 +6,7 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 
 | Item | Value |
 |------|-------|
-| Distro | `sigmaracer-wingman` |
+| Distro | `sigma-racer-wingman` |
 | Yocto LTS | Scarthgap (5.0) |
 | Init | systemd |
 | Display | Wayland + Weston (kiosk) |
@@ -17,12 +17,12 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 ## Repository layout
 
 ```
-sigmaracer-wingman/
-├── sigmaracer-instrumentation/  → symlink to ../sigmaracer-instrumentation (sole UI)
+sigma-racer-wingman/
+├── sigma-instrumentation/  → symlink to ../sigma-instrumentation (sole UI)
 ├── conf/                        Sample bblayers.conf and local.conf
 ├── docs/                        Architecture and requirements
-├── meta-sigmaracer-wingman/     Custom Yocto layer
-│   ├── recipes-sigmaracer-wingman/sigmaracer-instrumentation/   sigma-dash binary + cluster-ui.service
+├── meta-sigma-racer-wingman/     Custom Yocto layer
+│   ├── recipes-sigma-racer-wingman/sigma-instrumentation/   sigma-dash binary + cluster-ui.service
 │   └── ...
 ├── setup-environment.sh
 └── build/
@@ -30,13 +30,13 @@ sigmaracer-wingman/
 
 ## UI
 
-**sigmaracer-instrumentation** (`sigma-dash`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
+**sigma-instrumentation** (`sigma-dash`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
 
-Boot chain: `graphical.target` → `sigmaracer-wingman-ui.target` → `weston.service` + `cluster-ui.service` → `/usr/bin/sigma-dash`
+Boot chain: `graphical.target` → `sigma-racer-wingman-ui.target` → `weston.service` + `cluster-ui.service` → `/usr/bin/sigma-dash`
 
 ## Quick start
 
-### 1. Clone dependent layers (sibling to `sigmaracer-wingman/` under `embedded/`)
+### 1. Clone dependent layers (sibling to `sigma-racer-wingman/` under `embedded/`)
 
 ```bash
 cd ~/Source/sigma/embedded
@@ -56,9 +56,9 @@ git clone -b scarthgap https://github.com/rauc/meta-rauc
 ### 2. Initialize build environment
 
 ```bash
-cd ~/Source/sigma/embedded/sigmaracer-wingman
+cd ~/Source/sigma/embedded/sigma-racer-wingman
 chmod +x setup-environment.sh
-source setup-environment.sh sigmaracer-wingman-imx8mp
+source setup-environment.sh sigma-racer-wingman-imx8mp
 ```
 
 ### 3. Build
@@ -67,18 +67,18 @@ source setup-environment.sh sigmaracer-wingman-imx8mp
 # Accept NXP EULA in conf/local.conf if required:
 # ACCEPT_FSL_EULA = "1"
 
-bitbake sigmaracer-wingman-image
+bitbake sigma-racer-wingman-image
 ```
 
-Output: `build/tmp/deploy/images/sigmaracer-wingman-imx8mp/sigmaracer-wingman-image-sigmaracer-wingman-imx8mp.wic.gz`
+Output: `build/tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigma-racer-wingman-imx8mp.wic.gz`
 
 ### Virtual testing (800×480 QEMU)
 
-Run the full Sigma Racer Wingman stack locally without NXP hardware — same panel resolution as `sigmaracer-wingman-imx8mp`:
+Run the full Sigma Racer Wingman stack locally without NXP hardware — same panel resolution as `sigma-racer-wingman-imx8mp`:
 
 ```bash
-source setup-environment.sh sigmaracer-wingman-qemu
-bitbake sigmaracer-wingman-image-virt
+source setup-environment.sh sigma-racer-wingman-qemu
+bitbake sigma-racer-wingman-image-virt
 ./scripts/run-qemu.sh
 ```
 
@@ -87,13 +87,13 @@ Uses `build-virt/` (separate from hardware `build/`) and a slimmer layer set —
 For UI-only iteration without Yocto:
 
 ```bash
-cd ../sigmaracer-instrumentation && cargo virt
+cd ../sigma-instrumentation && cargo virt
 ```
 
 ### 4. Flash
 
 ```bash
-zcat tmp/deploy/images/sigmaracer-wingman-imx8mp/sigmaracer-wingman-image-sigmaracer-wingman-imx8mp.wic.gz | sudo dd of=/dev/sdX bs=4M status=progress
+zcat tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigma-racer-wingman-imx8mp.wic.gz | sudo dd of=/dev/sdX bs=4M status=progress
 ```
 
 ## System services
@@ -101,7 +101,7 @@ zcat tmp/deploy/images/sigmaracer-wingman-imx8mp/sigmaracer-wingman-image-sigmar
 | Service | Purpose |
 |---------|---------|
 | `weston.service` | Wayland compositor (no UI of its own) |
-| `cluster-ui.service` | **sigmaracer-instrumentation** — sole UI (`/usr/bin/sigma-dash`) |
+| `cluster-ui.service` | **sigma-instrumentation** — sole UI (`/usr/bin/sigma-dash`) |
 | `vehicle.service` | CAN / vehicle signal abstraction |
 | `navigation.service` | Turn-by-turn / map window |
 | `gps.service` | GNSS input |
@@ -111,7 +111,7 @@ zcat tmp/deploy/images/sigmaracer-wingman-imx8mp/sigmaracer-wingman-image-sigmar
 | `ota.service` | RAUC update orchestration |
 | `diagnostics.service` | DTC / health monitoring |
 
-Stub services (`vehicle`, `navigation`, etc.) install placeholder daemons until real implementations land. Replace recipes under `recipes-sigmaracer-wingman/` as subsystems mature.
+Stub services (`vehicle`, `navigation`, etc.) install placeholder daemons until real implementations land. Replace recipes under `recipes-sigma-racer-wingman/` as subsystems mature.
 
 ## Production options
 
@@ -131,27 +131,27 @@ RAUC_CERT_FILE = "${TOPDIR}/../keys/rauc/development-ca.cert.pem"
 
 ## Instrumentation UI integration
 
-The **sigmaracer-instrumentation** project is linked at `sigmaracer-wingman/sigmaracer-instrumentation` (symlink to `../sigmaracer-instrumentation`) and built as the `sigmaracer-instrumentation` Yocto package. It is the only UI on the image.
+The **sigma-instrumentation** project is linked at `sigma-racer-wingman/sigma-instrumentation` (symlink to `../sigma-instrumentation`) and built as the `sigma-instrumentation` Yocto package. It is the only UI on the image.
 
 Override source path in `local.conf`:
 
 ```bitbake
-SIGMA_INSTRUMENTATION_SRC = "/path/to/sigmaracer-instrumentation"
+SIGMA_INSTRUMENTATION_SRC = "/path/to/sigma-instrumentation"
 ```
 
 Desktop dev (windowed):
 
 ```bash
-cd ../sigmaracer-instrumentation && cargo run --bin sigma-dash
+cd ../sigma-instrumentation && cargo run --bin sigma-dash
 ```
 
 Panel-accurate local testing (800×480, matches imx8mp / QEMU virt):
 
 ```bash
-cd ../sigmaracer-instrumentation && cargo virt
+cd ../sigma-instrumentation && cargo virt
 ```
 
-Target kiosk (fullscreen, set automatically when built with `--cfg sigmaracer_wingman_embedded` or `SLINT_FULLSCREEN=1`):
+Target kiosk (fullscreen, set automatically when built with `--cfg sigma_racer_wingman_embedded` or `SLINT_FULLSCREEN=1`):
 
 ```bash
 SLINT_FULLSCREEN=1 cargo run --bin sigma-dash

@@ -2,11 +2,11 @@
 #@NAME: Sigma Racer Wingman i.MX 8M Plus
 #@DESCRIPTION: Sigma motorcycle instrument cluster — i.MX 8M Plus reference
 
-MACHINE ??= "sigmaracer-wingman-imx8mp"
-DISTRO ??= "sigmaracer-wingman"
+MACHINE ??= "sigma-racer-wingman-imx8mp"
+DISTRO ??= "sigma-racer-wingman"
 
-# Source sibling instrumentation crate (default: sigmaracer-wingman/sigmaracer-instrumentation symlink)
-SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigmaracer-instrumentation"
+# Source sibling instrumentation crate (default: sigma-racer-wingman/sigma-instrumentation symlink)
+SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigma-instrumentation"
 
 #
 # Parallel build

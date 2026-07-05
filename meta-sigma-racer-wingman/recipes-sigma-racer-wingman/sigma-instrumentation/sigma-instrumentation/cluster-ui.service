@@ -1,0 +1,27 @@
+[Unit]
+Description=Sigma Instrument Cluster UI (sigma-instrumentation)
+Documentation=file:/usr/share/doc/sigma-instrumentation/README
+After=weston.service vehicle.service
+Requires=weston.service
+Wants=vehicle.service
+PartOf=sigma-racer-wingman-ui.target
+Conflicts=getty@tty7.service
+
+[Service]
+Type=simple
+User=cluster
+Group=cluster
+SupplementaryGroups=wayland render video input
+EnvironmentFile=-/etc/sigma-racer-wingman/ui.env
+ExecStartPre=/bin/mkdir -p /run/user/cluster
+ExecStartPre=/bin/chown cluster:cluster /run/user/cluster
+ExecStart=/usr/bin/sigma-dash
+Restart=always
+RestartSec=1
+StandardOutput=journal
+StandardError=journal
+StartLimitInterval=60
+StartLimitBurst=10
+
+[Install]
+WantedBy=sigma-racer-wingman-ui.target

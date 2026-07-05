@@ -1,6 +1,6 @@
 # M7 safety core → SocketCAN draft frame map (first draft)
 #
-# Canonical DBC: schemas/can/m7-draft.dbc (used by sigmaracer-wingman-telemetry via dbc-rs).
+# Canonical DBC: schemas/can/m7-draft.dbc (used by sigma-racer-wingman-telemetry via dbc-rs).
 # YAML mirror below for VSS mapping docs; keep in sync with the DBC.
 #
 # vehicle.service decodes these frames and publishes VSS paths (see

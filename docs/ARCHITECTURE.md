@@ -85,17 +85,17 @@ Application layer stays hardware-agnostic; `vehicle.service` normalizes SocketCA
 
 | Section | Status | Layer / recipe |
 |---------|--------|----------------|
-| Yocto LTS + systemd | Done | `sigmaracer-wingman.conf` |
-| i.MX 8M Plus BSP | Done | `sigmaracer-wingman-imx8mp.conf` |
-| i.MX 95 BSP | Stub | `sigmaracer-wingman-imx95.conf` |
-| Wayland + Weston kiosk | Done | `sigmaracer-wingman-services`, weston bbappend |
-| Rust + Slint UI | Done | `sigmaracer-instrumentation_git.bb` → `sigma-dash` |
-| systemd services | Done | `recipes-sigmaracer-wingman/*-service` |
+| Yocto LTS + systemd | Done | `sigma-racer-wingman.conf` |
+| i.MX 8M Plus BSP | Done | `sigma-racer-wingman-imx8mp.conf` |
+| i.MX 95 BSP | Stub | `sigma-racer-wingman-imx95.conf` |
+| Wayland + Weston kiosk | Done | `sigma-racer-wingman-services`, weston bbappend |
+| Rust + Slint UI | Done | `sigma-instrumentation_git.bb` → `sigma-dash` |
+| systemd services | Done | `recipes-sigma-racer-wingman/*-service` |
 | SocketCAN | Done | `can-utils`, `vehicle.service` |
 | BlueZ / Wi-Fi | Done | packagegroup connectivity |
 | GPS | Partial | `gpsd`, `gps.service` stub |
 | MapLibre / Valhalla | Stub | `recipes-navigation/` |
-| RAUC A/B OTA | Partial | `sigmaracer-wingman-ab.wks.in`, `rauc-conf-sigmaracer-wingman` |
+| RAUC A/B OTA | Partial | `sigma-racer-wingman-ab.wks.in`, `rauc-conf-sigma-racer-wingman` |
 | Read-only root | Optional | `DISTRO_FEATURES` |
 | Secure boot / TPM | Documented | Board fuse + meta-imx |
 | SQLite / `/data` | Done | tmpfiles, fstab bbappend |

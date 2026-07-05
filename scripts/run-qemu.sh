@@ -1,36 +1,36 @@
 #!/usr/bin/env bash
-# Boot a sigmaracer-wingman-qemu image in an 800×480 window.
+# Boot a sigma-racer-wingman-qemu image in an 800×480 window.
 #
 # Prerequisites:
-#   source setup-environment.sh sigmaracer-wingman-qemu
-#   bitbake sigmaracer-wingman-image-virt
+#   source setup-environment.sh sigma-racer-wingman-qemu
+#   bitbake sigma-racer-wingman-image-virt
 #
 # Yocto's qemu-system-native is often headless-only (no gtk/sdl). This script
 # falls back to the host qemu-system-x86 package when needed:
 #   sudo apt install qemu-system-x86
 #
 # Usage (works from any directory after sourcing setup-environment):
-#   /path/to/sigmaracer-wingman/scripts/run-qemu.sh [runqemu extra args...]
+#   /path/to/sigma-racer-wingman/scripts/run-qemu.sh [runqemu extra args...]
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SIGMARACER_WINGMAN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-BUILD_DIR="${SIGMARACER_WINGMAN_ROOT}/build-virt"
-DEPLOY_DIR="${BUILD_DIR}/tmp/deploy/images/sigmaracer-wingman-qemu"
-ROOTFS="${DEPLOY_DIR}/sigmaracer-wingman-image-virt-sigmaracer-wingman-qemu.rootfs.ext4"
-QBCONF="${DEPLOY_DIR}/sigmaracer-wingman-image-virt-sigmaracer-wingman-qemu.rootfs.qemuboot.conf"
+SIGMA_RACER_WINGMAN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+BUILD_DIR="${SIGMA_RACER_WINGMAN_ROOT}/build-virt"
+DEPLOY_DIR="${BUILD_DIR}/tmp/deploy/images/sigma-racer-wingman-qemu"
+ROOTFS="${DEPLOY_DIR}/sigma-racer-wingman-image-virt-sigma-racer-wingman-qemu.rootfs.ext4"
+QBCONF="${DEPLOY_DIR}/sigma-racer-wingman-image-virt-sigma-racer-wingman-qemu.rootfs.qemuboot.conf"
 YOCTO_QEMU="${BUILD_DIR}/tmp/work/x86_64-linux/qemu-helper-native/1.0/recipe-sysroot-native/usr/bin/qemu-system-x86_64"
 
 if [[ ! -f "${ROOTFS}" ]]; then
     echo "error: ${ROOTFS} not found" >&2
-    echo "  source setup-environment.sh sigmaracer-wingman-qemu" >&2
-    echo "  bitbake sigmaracer-wingman-image-virt" >&2
+    echo "  source setup-environment.sh sigma-racer-wingman-qemu" >&2
+    echo "  bitbake sigma-racer-wingman-image-virt" >&2
     exit 1
 fi
 
 if ! command -v runqemu >/dev/null 2>&1; then
-    echo "error: runqemu not in PATH — source setup-environment.sh sigmaracer-wingman-qemu first" >&2
+    echo "error: runqemu not in PATH — source setup-environment.sh sigma-racer-wingman-qemu first" >&2
     exit 1
 fi
 
@@ -79,5 +79,5 @@ fi
 
 # novga skips runqemu's virtio-vga but also skips -display; add both via qemuparams.
 # serialstdio: boot log on the host terminal, not tiny text in the SDL window.
-exec runqemu sigmaracer-wingman-qemu "${ROOTFS}" "${use_qbconf}" sdl slirp novga serialstdio \
+exec runqemu sigma-racer-wingman-qemu "${ROOTFS}" "${use_qbconf}" sdl slirp novga serialstdio \
     'qemuparams=-display sdl,show-cursor=on -device virtio-gpu-pci' "$@"

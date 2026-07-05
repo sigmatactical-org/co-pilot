@@ -7,66 +7,66 @@
 # Do not run as ./setup-environment.sh — that works for CI but sourcing is
 # required for bitbake to see the environment.
 
-_SIGMARACER_WINGMAN_SETUP_SOURCED=0
+_SIGMA_RACER_WINGMAN_SETUP_SOURCED=0
 if [[ "${BASH_SOURCE[0]:-}" != "${0:-}" ]]; then
-    _SIGMARACER_WINGMAN_SETUP_SOURCED=1
+    _SIGMA_RACER_WINGMAN_SETUP_SOURCED=1
 fi
 
 # set -e + source = exiting parent shell on any failure. Only enforce when executed.
-if (( !_SIGMARACER_WINGMAN_SETUP_SOURCED )); then
+if (( !_SIGMA_RACER_WINGMAN_SETUP_SOURCED )); then
     set -euo pipefail
 fi
 
-_sigmaracer_wingman_fail() {
+_sigma_racer_wingman_fail() {
     echo "error: $*" >&2
-    if (( _SIGMARACER_WINGMAN_SETUP_SOURCED )); then
+    if (( _SIGMA_RACER_WINGMAN_SETUP_SOURCED )); then
         return 1
     fi
     exit 1
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-SIGMARACER_WINGMAN_ROOT="${SCRIPT_DIR}"
-EMBEDDED_ROOT="$(cd "${SIGMARACER_WINGMAN_ROOT}/.." && pwd)"
+SIGMA_RACER_WINGMAN_ROOT="${SCRIPT_DIR}"
+EMBEDDED_ROOT="$(cd "${SIGMA_RACER_WINGMAN_ROOT}/.." && pwd)"
 YOCTO_BASE="${YOCTO_BASE:-${EMBEDDED_ROOT}}"
 POKY_DIR="${YOCTO_BASE}/poky"
-MACHINE="${1:-sigmaracer-wingman-imx8mp}"
+MACHINE="${1:-sigma-racer-wingman-imx8mp}"
 if [[ -n "${2:-}" ]]; then
     BUILD_DIR="${2}"
-elif [[ "${MACHINE}" == "sigmaracer-wingman-qemu" ]]; then
-    BUILD_DIR="${SIGMARACER_WINGMAN_ROOT}/build-virt"
+elif [[ "${MACHINE}" == "sigma-racer-wingman-qemu" ]]; then
+    BUILD_DIR="${SIGMA_RACER_WINGMAN_ROOT}/build-virt"
 else
-    BUILD_DIR="${SIGMARACER_WINGMAN_ROOT}/build"
+    BUILD_DIR="${SIGMA_RACER_WINGMAN_ROOT}/build"
 fi
 
 usage() {
     cat <<EOF
 Usage: source setup-environment.sh [MACHINE] [build-dir]
 
-  MACHINE     sigmaracer-wingman-imx8mp (default) | sigmaracer-wingman-imx95 | sigmaracer-wingman-qemu
-  build-dir   build (hardware) or build-virt (sigmaracer-wingman-qemu default)
+  MACHINE     sigma-racer-wingman-imx8mp (default) | sigma-racer-wingman-imx95 | sigma-racer-wingman-qemu
+  build-dir   build (hardware) or build-virt (sigma-racer-wingman-qemu default)
 
 Environment:
   YOCTO_BASE  Directory containing poky and meta layers (default: ${EMBEDDED_ROOT})
 
 First-time setup — clone Yocto layers:
-  ${SIGMARACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh
+  ${SIGMA_RACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh
 
 Hardware build:
-  source setup-environment.sh sigmaracer-wingman-imx8mp
-  bitbake sigmaracer-wingman-image
+  source setup-environment.sh sigma-racer-wingman-imx8mp
+  bitbake sigma-racer-wingman-image
 
 Virtual testing (800×480 QEMU, no NXP BSP):
-  source setup-environment.sh sigmaracer-wingman-qemu
-  bitbake sigmaracer-wingman-image-virt
-  ${SIGMARACER_WINGMAN_ROOT}/scripts/run-qemu.sh
+  source setup-environment.sh sigma-racer-wingman-qemu
+  bitbake sigma-racer-wingman-image-virt
+  ${SIGMA_RACER_WINGMAN_ROOT}/scripts/run-qemu.sh
 
 EOF
 }
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     usage
-    if (( _SIGMARACER_WINGMAN_SETUP_SOURCED )); then
+    if (( _SIGMA_RACER_WINGMAN_SETUP_SOURCED )); then
         return 0
     fi
     exit 0
@@ -77,27 +77,27 @@ if [[ ! -d "${POKY_DIR}" ]]; then
 error: poky not found at ${POKY_DIR}
 
 Clone the Yocto layers first:
-  ${SIGMARACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh
+  ${SIGMA_RACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh
 
 Or set YOCTO_BASE to the directory that contains poky/, then re-run:
   export YOCTO_BASE=/path/to/yocto-tree
   source setup-environment.sh ${MACHINE}
 
 EOF
-    _sigmaracer_wingman_fail "missing poky checkout" || return 1
+    _sigma_racer_wingman_fail "missing poky checkout" || return 1
 fi
 
 if [[ ! -f "${POKY_DIR}/oe-init-build-env" ]]; then
-    _sigmaracer_wingman_fail "invalid poky checkout (oe-init-build-env not found in ${POKY_DIR})" || return 1
+    _sigma_racer_wingman_fail "invalid poky checkout (oe-init-build-env not found in ${POKY_DIR})" || return 1
 fi
 
 # Seed Sigma Racer Wingman conf before oe-init-build-env (otherwise Poky default local.conf wins)
-if [[ "${MACHINE}" == "sigmaracer-wingman-qemu" ]]; then
-    _local_sample="${SIGMARACER_WINGMAN_ROOT}/conf/local.conf.virt.sample"
-    _bblayers_sample="${SIGMARACER_WINGMAN_ROOT}/conf/bblayers-virt.conf.sample"
+if [[ "${MACHINE}" == "sigma-racer-wingman-qemu" ]]; then
+    _local_sample="${SIGMA_RACER_WINGMAN_ROOT}/conf/local.conf.virt.sample"
+    _bblayers_sample="${SIGMA_RACER_WINGMAN_ROOT}/conf/bblayers-virt.conf.sample"
 else
-    _local_sample="${SIGMARACER_WINGMAN_ROOT}/conf/local.conf.sample"
-    _bblayers_sample="${SIGMARACER_WINGMAN_ROOT}/conf/bblayers.conf.sample"
+    _local_sample="${SIGMA_RACER_WINGMAN_ROOT}/conf/local.conf.sample"
+    _bblayers_sample="${SIGMA_RACER_WINGMAN_ROOT}/conf/bblayers.conf.sample"
 fi
 
 mkdir -p "${BUILD_DIR}/conf"
@@ -107,14 +107,14 @@ if [[ ! -f "${BUILD_DIR}/conf/local.conf" ]]; then
 fi
 
 if [[ ! -f "${BUILD_DIR}/conf/bblayers.conf" ]] \
-    || ! grep -q meta-sigmaracer-wingman "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null; then
-    sed "s|\${SIGMARACER_WINGMAN_ROOT}|${SIGMARACER_WINGMAN_ROOT}|g" \
+    || ! grep -q meta-sigma-racer-wingman "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null; then
+    sed "s|\${SIGMA_RACER_WINGMAN_ROOT}|${SIGMA_RACER_WINGMAN_ROOT}|g" \
         "${_bblayers_sample}" > "${BUILD_DIR}/conf/bblayers.conf"
 fi
 
 # oe-init-build-env must be sourced; it sets PATH, BBPATH, and cd's into build/
 # shellcheck source=/dev/null
-source "${POKY_DIR}/oe-init-build-env" "${BUILD_DIR}" || { _sigmaracer_wingman_fail "oe-init-build-env failed"; return 1; }
+source "${POKY_DIR}/oe-init-build-env" "${BUILD_DIR}" || { _sigma_racer_wingman_fail "oe-init-build-env failed"; return 1; }
 
 # Ensure machine and distro match the requested target
 if ! grep -q '^MACHINE' conf/local.conf; then
@@ -124,14 +124,14 @@ else
 fi
 
 if ! grep -q '^DISTRO' conf/local.conf; then
-    echo 'DISTRO = "sigmaracer-wingman"' >> conf/local.conf
+    echo 'DISTRO = "sigma-racer-wingman"' >> conf/local.conf
 else
-    sed -i 's/^DISTRO.*/DISTRO = "sigmaracer-wingman"/' conf/local.conf
+    sed -i 's/^DISTRO.*/DISTRO = "sigma-racer-wingman"/' conf/local.conf
 fi
 
 # BitBake reads machine layers from BBLAYERS — warn about missing optional layers
 _missing_layers=()
-if [[ "${MACHINE}" == "sigmaracer-wingman-qemu" ]]; then
+if [[ "${MACHINE}" == "sigma-racer-wingman-qemu" ]]; then
     _required_layers=(
         "${YOCTO_BASE}/meta-openembedded/meta-oe"
         "${YOCTO_BASE}/meta-rust"
@@ -156,19 +156,19 @@ cat <<EOF
 
 Sigma Racer Wingman environment ready.
   MACHINE=${MACHINE}
-  DISTRO=sigmaracer-wingman
+  DISTRO=sigma-racer-wingman
   BUILD=${BUILD_DIR}
   POKY=${POKY_DIR}
 
 Build image:
-  bitbake sigmaracer-wingman-image
+  bitbake sigma-racer-wingman-image
 
 EOF
 
-if [[ "${MACHINE}" == "sigmaracer-wingman-qemu" ]]; then
+if [[ "${MACHINE}" == "sigma-racer-wingman-qemu" ]]; then
     cat <<EOF
 Run in QEMU (800×480 window):
-  ${SIGMARACER_WINGMAN_ROOT}/scripts/run-qemu.sh
+  ${SIGMA_RACER_WINGMAN_ROOT}/scripts/run-qemu.sh
 
 EOF
 fi
@@ -178,11 +178,11 @@ if ((${#_missing_layers[@]} > 0)); then
     for _layer in "${_missing_layers[@]}"; do
         echo "  - ${_layer}" >&2
     done
-    echo "Run: ${SIGMARACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh" >&2
+    echo "Run: ${SIGMA_RACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh" >&2
     echo >&2
-    _sigmaracer_wingman_fail "missing required Yocto layers" || return 1
+    _sigma_racer_wingman_fail "missing required Yocto layers" || return 1
 fi
 
-if (( _SIGMARACER_WINGMAN_SETUP_SOURCED )); then
+if (( _SIGMA_RACER_WINGMAN_SETUP_SOURCED )); then
     return 0
 fi

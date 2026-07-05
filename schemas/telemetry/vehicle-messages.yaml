@@ -3,11 +3,11 @@
 # vehicle.service publishes on a Unix stream socket; cluster-ui (sigma-dash) subscribes.
 # All payloads reference VSS paths from schemas/vss/sigma-cluster.vspec.
 #
-# Socket (planned): /run/sigmaracer-wingman/vehicle.sock
+# Socket (planned): /run/sigma-racer-wingman/vehicle.sock
 # Encoding: JSON (default) or CBOR (Content-Type: application/cbor)
 
 version: 0.1
-socket: /run/sigmaracer-wingman/vehicle.sock
+socket: /run/sigma-racer-wingman/vehicle.sock
 
 envelope:
   description: Common wrapper for every frame on the wire.

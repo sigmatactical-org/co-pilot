@@ -1,0 +1,9 @@
+[Unit]
+Description=Sigma Racer Wingman instrument cluster (sole UI)
+Documentation=man:sigma-racer-wingman(7)
+Requires=weston.service cluster-ui.service
+After=weston.service
+Before=navigation.service bluetooth.service camera.service
+
+[Install]
+WantedBy=graphical.target
