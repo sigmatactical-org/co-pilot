@@ -1,6 +1,6 @@
 # Motorcycle Instrument Cluster — Ideal Yocto Distribution Requirements
 
-This document is the authoritative requirements specification for the Sigma Co-Pilot Yocto distribution. Implementation status is tracked in `ARCHITECTURE.md`.
+This document is the authoritative requirements specification for the Sigma Sigma Racer Wingman Yocto distribution. Implementation status is tracked in `ARCHITECTURE.md`.
 
 ## 1. System Foundation
 

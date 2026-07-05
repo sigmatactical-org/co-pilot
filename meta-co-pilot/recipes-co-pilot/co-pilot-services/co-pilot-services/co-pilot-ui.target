@@ -1,9 +1,0 @@
-[Unit]
-Description=Co-Pilot instrument cluster (sole UI)
-Documentation=man:co-pilot(7)
-Requires=weston.service cluster-ui.service
-After=weston.service
-Before=navigation.service bluetooth.service camera.service
-
-[Install]
-WantedBy=graphical.target

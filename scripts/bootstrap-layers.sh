@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Clone Yocto Project Scarthgap layers required by Co-Pilot into embedded/
+# Clone Yocto Project Scarthgap layers required by Sigma Racer Wingman into embedded/
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CO_PILOT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-YOCTO_BASE="${YOCTO_BASE:-$(cd "${CO_PILOT_ROOT}/.." && pwd)}"
+SIGMARACER_WINGMAN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+YOCTO_BASE="${YOCTO_BASE:-$(cd "${SIGMARACER_WINGMAN_ROOT}/.." && pwd)}"
 BRANCH="${YOCTO_BRANCH:-scarthgap}"
 
 clone() {
@@ -21,7 +21,7 @@ clone() {
     git clone -b "${BRANCH}" --depth 1 "${url}" "${dest}"
 }
 
-echo "Co-Pilot Yocto bootstrap"
+echo "Sigma Racer Wingman Yocto bootstrap"
 echo "  YOCTO_BASE=${YOCTO_BASE}"
 echo "  branch=${BRANCH}"
 echo
@@ -46,12 +46,12 @@ EOF
 
 if [[ "${VIRT_ONLY}" == "--virt-only" ]]; then
     cat <<EOF
-Virtual target (co-pilot-qemu) — meta-imx / Freescale BSP not required.
+Virtual target (sigmaracer-wingman-qemu) — meta-imx / Freescale BSP not required.
 
 Initialize and build:
-  cd ${CO_PILOT_ROOT}
-  source setup-environment.sh co-pilot-qemu
-  bitbake co-pilot-image-virt
+  cd ${SIGMARACER_WINGMAN_ROOT}
+  source setup-environment.sh sigmaracer-wingman-qemu
+  bitbake sigmaracer-wingman-image-virt
   ./scripts/run-qemu.sh
 
 EOF
@@ -62,16 +62,16 @@ Still required (NXP account):
     ${YOCTO_BASE}/meta-imx
 
 Then initialize the build environment:
-  cd ${CO_PILOT_ROOT}
-  source setup-environment.sh co-pilot-imx8mp
+  cd ${SIGMARACER_WINGMAN_ROOT}
+  source setup-environment.sh sigmaracer-wingman-imx8mp
 
 Virtual testing (no NXP BSP):
-  ${CO_PILOT_ROOT}/scripts/bootstrap-layers.sh --virt-only
-  source setup-environment.sh co-pilot-qemu
+  ${SIGMARACER_WINGMAN_ROOT}/scripts/bootstrap-layers.sh --virt-only
+  source setup-environment.sh sigmaracer-wingman-qemu
 
 EOF
 
     if [[ ! -d "${YOCTO_BASE}/meta-imx/meta-bsp" ]]; then
-        echo "note: meta-imx not present yet — needed for hardware bitbake, not for co-pilot-qemu" >&2
+        echo "note: meta-imx not present yet — needed for hardware bitbake, not for sigmaracer-wingman-qemu" >&2
     fi
 fi

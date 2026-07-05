@@ -1,13 +1,13 @@
-# Co-Pilot vehicle telemetry IPC — message definitions (first draft v0.1)
+# Sigma Racer Wingman vehicle telemetry IPC — message definitions (first draft v0.1)
 #
 # vehicle.service publishes on a Unix stream socket; cluster-ui (sigma-dash) subscribes.
 # All payloads reference VSS paths from schemas/vss/sigma-cluster.vspec.
 #
-# Socket (planned): /run/co-pilot/vehicle.sock
+# Socket (planned): /run/sigmaracer-wingman/vehicle.sock
 # Encoding: JSON (default) or CBOR (Content-Type: application/cbor)
 
 version: 0.1
-socket: /run/co-pilot/vehicle.sock
+socket: /run/sigmaracer-wingman/vehicle.sock
 
 envelope:
   description: Common wrapper for every frame on the wire.

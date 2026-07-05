@@ -1,4 +1,4 @@
-# Sigma Co-Pilot instrument cluster — VSS signal tree (first draft)
+# Sigma Sigma Racer Wingman instrument cluster — VSS signal tree (first draft)
 #
 # Extends COVESA Vehicle Signal Specification paths where they fit; adds
 # motorcycle-specific branches under Vehicle.Chassis and Vehicle.Body.
@@ -8,7 +8,7 @@
 
 Vehicle:
   type: branch
-  description: Root branch for all vehicle signals exposed to Co-Pilot.
+  description: Root branch for all vehicle signals exposed to Sigma Racer Wingman.
 
 # --- Glanceable / persistent cluster (Tier 1) --------------------------------
 

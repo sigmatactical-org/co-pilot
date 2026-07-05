@@ -8,19 +8,19 @@ BBFILES ?= ""
 #
 # Virtual target layers — no NXP / Freescale BSP required
 #
-CO_PILOT_ROOT ??= "${TOPDIR}/../.."
+SIGMARACER_WINGMAN_ROOT ??= "${TOPDIR}/../.."
 
 BBLAYERS ?= " \
-    ${CO_PILOT_ROOT}/meta-co-pilot \
-    ${CO_PILOT_ROOT}/../poky/meta \
-    ${CO_PILOT_ROOT}/../poky/meta-poky \
-    ${CO_PILOT_ROOT}/../poky/meta-yocto-bsp \
-    ${CO_PILOT_ROOT}/../meta-openembedded/meta-oe \
-    ${CO_PILOT_ROOT}/../meta-openembedded/meta-multimedia \
-    ${CO_PILOT_ROOT}/../meta-openembedded/meta-networking \
-    ${CO_PILOT_ROOT}/../meta-openembedded/meta-python \
-    ${CO_PILOT_ROOT}/../meta-openembedded/meta-filesystems \
-    ${CO_PILOT_ROOT}/../meta-rust \
-    ${CO_PILOT_ROOT}/../meta-clang \
-    ${CO_PILOT_ROOT}/../meta-rauc \
+    ${SIGMARACER_WINGMAN_ROOT}/meta-sigmaracer-wingman \
+    ${SIGMARACER_WINGMAN_ROOT}/../poky/meta \
+    ${SIGMARACER_WINGMAN_ROOT}/../poky/meta-poky \
+    ${SIGMARACER_WINGMAN_ROOT}/../poky/meta-yocto-bsp \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-openembedded/meta-oe \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-openembedded/meta-multimedia \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-openembedded/meta-networking \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-openembedded/meta-python \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-openembedded/meta-filesystems \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-rust \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-clang \
+    ${SIGMARACER_WINGMAN_ROOT}/../meta-rauc \
 "

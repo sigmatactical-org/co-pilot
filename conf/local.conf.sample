@@ -1,12 +1,12 @@
 #@TYPE: Machine
-#@NAME: Co-Pilot i.MX 8M Plus
+#@NAME: Sigma Racer Wingman i.MX 8M Plus
 #@DESCRIPTION: Sigma motorcycle instrument cluster — i.MX 8M Plus reference
 
-MACHINE ??= "co-pilot-imx8mp"
-DISTRO ??= "co-pilot"
+MACHINE ??= "sigmaracer-wingman-imx8mp"
+DISTRO ??= "sigmaracer-wingman"
 
-# Source sibling instrumentation crate (default: co-pilot/instrumentation symlink)
-SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../instrumentation"
+# Source sibling instrumentation crate (default: sigmaracer-wingman/sigmaracer-instrumentation symlink)
+SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigmaracer-instrumentation"
 
 #
 # Parallel build

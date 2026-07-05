@@ -1,0 +1,26 @@
+# Sigma Racer Wingman QEMU — Weston without VT/tty7 (QEMU SDL/virtio-gpu has no usable console VT)
+[Unit]
+Description=Weston, a Wayland compositor, as a system service
+Documentation=man:weston(1) man:weston.ini(5)
+Requires=systemd-user-sessions.service dbus.socket seatd.service
+After=systemd-user-sessions.service dbus.socket seatd.service
+Before=graphical.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/weston
+RuntimeDirectory=weston
+RuntimeDirectoryMode=0770
+Environment=XDG_RUNTIME_DIR=/run/weston
+UMask=0007
+ExecStart=/usr/bin/weston --config=/etc/xdg/weston/sigmaracer-wingman.ini --socket=wayland-0
+User=weston
+Group=wayland
+SupplementaryGroups=video input render
+WorkingDirectory=/home/weston
+StandardOutput=journal
+StandardError=journal
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Sigma Racer Wingman Vehicle Signal Abstraction (CAN / telemetry)
+After=network.target
+Before=cluster-ui.service
+Wants=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sigmaracer-wingman/vehicle.env
+ExecStart=/usr/bin/sigmaracer-wingman-vehicle
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
