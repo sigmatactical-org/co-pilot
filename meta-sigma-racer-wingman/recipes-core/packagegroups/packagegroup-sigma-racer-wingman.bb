@@ -33,7 +33,7 @@ RDEPENDS:${PN}-graphics = " \
     weston-init \
     seatd \
     sigma-racer-wingman-services \
-    instrumentation \
+    sigma-racer \
     liberation-fonts \
 "
 

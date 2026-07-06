@@ -1,6 +1,6 @@
 [Unit]
-Description=Sigma Instrument Cluster UI (sigma-instrumentation)
-Documentation=file:/usr/share/doc/sigma-instrumentation/README
+Description=Sigma Racer instrument cluster UI (sigma-racer)
+Documentation=file:/usr/share/doc/sigma-racer/README
 After=weston.service vehicle.service
 Requires=weston.service
 Wants=vehicle.service

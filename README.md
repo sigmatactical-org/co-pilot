@@ -18,11 +18,12 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 
 ```
 sigma-racer-wingman/
-├── sigma-instrumentation/  → symlink to ../sigma-instrumentation (sole UI)
+├── sigma-instrumentation/  → symlink to ../sigma-instrumentation (UI library)
+├── sigma-racer/                 → symlink to ../sigma-racer (sole UI binary)
 ├── conf/                        Sample bblayers.conf and local.conf
 ├── docs/                        Architecture and requirements
 ├── meta-sigma-racer-wingman/     Custom Yocto layer
-│   ├── recipes-sigma-racer-wingman/sigma-instrumentation/   sigma-dash binary + cluster-ui.service
+│   ├── recipes-sigma-racer-wingman/sigma-racer/   sigma-dash binary + cluster-ui.service
 │   └── ...
 ├── setup-environment.sh
 └── build/
@@ -30,7 +31,7 @@ sigma-racer-wingman/
 
 ## UI
 
-**sigma-instrumentation** (`sigma-dash`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
+**sigma-racer** (`sigma-dash`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
 
 Boot chain: `graphical.target` → `sigma-racer-wingman-ui.target` → `weston.service` + `cluster-ui.service` → `/usr/bin/sigma-dash`
 
@@ -101,7 +102,7 @@ zcat tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigm
 | Service | Purpose |
 |---------|---------|
 | `weston.service` | Wayland compositor (no UI of its own) |
-| `cluster-ui.service` | **sigma-instrumentation** — sole UI (`/usr/bin/sigma-dash`) |
+| `cluster-ui.service` | **sigma-racer** — sole UI (`/usr/bin/sigma-dash`) |
 | `vehicle.service` | CAN / vehicle signal abstraction |
 | `navigation.service` | Turn-by-turn / map window |
 | `gps.service` | GNSS input |
@@ -131,18 +132,19 @@ RAUC_CERT_FILE = "${TOPDIR}/../keys/rauc/development-ca.cert.pem"
 
 ## Instrumentation UI integration
 
-The **sigma-instrumentation** project is linked at `sigma-racer-wingman/sigma-instrumentation` (symlink to `../sigma-instrumentation`) and built as the `sigma-instrumentation` Yocto package. It is the only UI on the image.
+The **sigma-racer** product app is linked at `sigma-racer-wingman/sigma-racer` (symlink to `../sigma-racer`) and built as the `sigma-racer` Yocto package. It is the only UI on the image. The **sigma-instrumentation** library repo remains a sibling dependency for the Rust build.
 
-Override source path in `local.conf`:
+Override source paths in `local.conf`:
 
 ```bitbake
 SIGMA_INSTRUMENTATION_SRC = "/path/to/sigma-instrumentation"
+SIGMA_RACER_SRC = "/path/to/sigma-racer"
 ```
 
 Desktop dev (windowed):
 
 ```bash
-cd ../sigma-instrumentation && cargo run --bin sigma-dash
+cd ../sigma-racer && cargo run --bin sigma-dash
 ```
 
 Panel-accurate local testing (800×480, matches imx8mp / QEMU virt):

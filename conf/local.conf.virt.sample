@@ -5,8 +5,9 @@
 MACHINE ??= "sigma-racer-wingman-qemu"
 DISTRO ??= "sigma-racer-wingman"
 
-# Source sibling instrumentation crate (default: sigma-racer-wingman/sigma-instrumentation symlink)
+# Source sibling Rust repos (default: sigma-racer-wingman/sigma-instrumentation and sigma-racer symlinks)
 SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigma-instrumentation"
+SIGMA_RACER_SRC ??= "${TOPDIR}/../../sigma-racer"
 
 #
 # Parallel build

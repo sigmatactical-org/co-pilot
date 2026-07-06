@@ -19,7 +19,7 @@ IMAGE_INSTALL = " \
     packagegroup-sigma-racer-wingman-graphics \
     sigma-racer-wingman-services \
     vehicle-service \
-    instrumentation \
+    sigma-racer \
     ${CORE_IMAGE_EXTRA_INSTALL} \
 "
 

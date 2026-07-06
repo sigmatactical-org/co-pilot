@@ -1,5 +1,5 @@
-SUMMARY = "Sigma Racer instrument cluster UI (sigma-instrumentation / sigma-dash)"
-HOMEPAGE = "https://github.com/sigmatactical-org/sigma-instrumentation"
+SUMMARY = "Sigma Racer instrument cluster UI (sigma-racer / sigma-dash)"
+HOMEPAGE = "https://github.com/sigmatactical-org/sigma-racer"
 LICENSE = "MIT | Apache-2.0"
 LIC_FILES_CHKSUM = " \
     file://LICENSE-MIT;md5=a082e45a87ea9bc152345be779914257 \
@@ -8,10 +8,10 @@ LIC_FILES_CHKSUM = " \
 
 inherit cargo cargo-update-recipe-crates systemd externalsrc
 
-EXTERNALSRC = "${SIGMA_INSTRUMENTATION_SRC}"
+EXTERNALSRC = "${SIGMA_RACER_SRC}"
 
 SRC_URI = " \
-    git://github.com/sigmatactical-org/sigma-instrumentation.git;protocol=https;branch=main;name=instrumentation;nobranch=1 \
+    git://github.com/sigmatactical-org/sigma-racer.git;protocol=https;branch=main;name=racer;nobranch=1 \
     file://cluster-ui.service \
     file://sigma-racer-wingman-ui.env \
     file://sigma-racer-wingman-ui-qemu.env \
@@ -19,10 +19,7 @@ SRC_URI = " \
 
 UI_ENV = "${@bb.utils.contains('MACHINE', 'sigma-racer-wingman-qemu', 'sigma-racer-wingman-ui-qemu.env', 'sigma-racer-wingman-ui.env', d)}"
 
-# After SRC_URI assignment — crates.inc uses SRC_URI +=
-require ${THISDIR}/sigma-instrumentation-crates.inc
-
-SRCREV = "e81cd1206e2a23f6fbb9cae678616a47760467a3"
+SRCREV = "1efb81d00b561b9104b6536fb9733c2eef62ebbb"
 
 S = "${WORKDIR}/git"
 
@@ -42,7 +39,7 @@ DEPENDS += " \
 export SLINT_BACKEND = "femtovg"
 export RUSTFLAGS:append = " --cfg sigma_racer_wingman_embedded"
 
-CARGO_BUILD_FLAGS:append = " -p sigma-racer --bin sigma-dash"
+CARGO_BUILD_FLAGS:append = " --bin sigma-dash"
 
 SYSTEMD_SERVICE:${PN} = "cluster-ui.service"
 SYSTEMD_AUTO_ENABLE = "enable"
