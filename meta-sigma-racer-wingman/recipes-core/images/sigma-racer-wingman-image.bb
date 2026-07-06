@@ -7,10 +7,16 @@ LICENSE = "MIT"
 inherit core-image
 
 IMAGE_FEATURES += " \
-    ssh-server-openssh \
-    tools-debug \
     hwcodec \
 "
+
+# Development conveniences (interactive SSH login + on-target debug tooling) are
+# a security liability on a shipped instrument cluster, so they are OFF by
+# default. Enable them for a bring-up/debug build with, in local.conf:
+#     SIGMA_RACER_WINGMAN_DEBUG = "1"
+# (The QEMU virt image enables them unconditionally for local testing.)
+SIGMA_RACER_WINGMAN_DEBUG ??= "0"
+IMAGE_FEATURES += "${@'ssh-server-openssh tools-debug debug-tweaks' if d.getVar('SIGMA_RACER_WINGMAN_DEBUG') == '1' else ''}"
 
 # No splash — instrumentation is the only UI from first frame
 IMAGE_FEATURES:remove = "splash"

@@ -11,7 +11,7 @@ inherit cargo cargo-update-recipe-crates systemd externalsrc
 EXTERNALSRC = "${SIGMA_RACER_SRC}"
 
 SRC_URI = " \
-    git://github.com/sigmatactical-org/sigma-racer.git;protocol=https;branch=main;name=racer;nobranch=1 \
+    git://github.com/sigmatactical-org/sigma-racer.git;protocol=https;name=racer;nobranch=1 \
     file://cluster-ui.service \
     file://sigma-racer-wingman-ui.env \
     file://sigma-racer-wingman-ui-qemu.env \

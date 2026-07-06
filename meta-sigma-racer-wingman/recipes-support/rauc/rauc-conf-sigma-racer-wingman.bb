@@ -8,9 +8,16 @@ SRC_URI = "file://system.conf \
 
 S = "${WORKDIR}"
 
+# The RAUC `compatible` string embeds the machine name, which differs per
+# target, so this package must be rebuilt per machine.
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 do_install() {
     install -d ${D}${sysconfdir}/rauc
     install -m 0644 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc/system.conf
+    # RAUC has no runtime variable expansion; bake the real MACHINE in now so the
+    # on-device `compatible` matches the value stamped on update bundles.
+    sed -i "s/@MACHINE@/${MACHINE}/g" ${D}${sysconfdir}/rauc/system.conf
     install -m 0644 ${WORKDIR}/sigma-racer-wingman-ca.cert.pem ${D}${sysconfdir}/rauc/ca.cert.pem
 }
 

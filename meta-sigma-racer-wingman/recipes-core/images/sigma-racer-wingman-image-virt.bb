@@ -1,6 +1,6 @@
 SUMMARY = "Sigma Racer Wingman virtual test image (800×480 QEMU UI stack)"
-DESCRIPTION = "Minimal Sigma Racer Wingman image for local QEMU testing — Weston kiosk and \
-instrumentation only, without vehicle/CAN/OTA hardware dependencies."
+DESCRIPTION = "Minimal Sigma Racer Wingman image for local QEMU testing — Weston kiosk, \
+virtual SocketCAN (vcan0), and instrumentation without OTA hardware dependencies."
 
 LICENSE = "MIT"
 
@@ -17,6 +17,7 @@ IMAGE_FEATURES:remove = "splash hwcodec"
 IMAGE_INSTALL = " \
     packagegroup-sigma-racer-wingman-core \
     packagegroup-sigma-racer-wingman-graphics \
+    packagegroup-sigma-racer-wingman-vehicle \
     sigma-racer-wingman-services \
     vehicle-service \
     sigma-racer \

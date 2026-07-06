@@ -39,6 +39,7 @@ RDEPENDS:${PN}-graphics = " \
 
 RDEPENDS:${PN}-vehicle = " \
     can-utils \
+    can-network \
     iproute2 \
     vehicle-service \
 "

@@ -3,7 +3,7 @@
 # Slot A and Slot B are identical rootfs partitions; boot partition holds
 # kernel + dtb. Data partition persists maps, logs, and SQLite databases.
 
-part --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --active --align 4096 --size 128
+part --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --active --align 4096 --fixed-size ${SIGMA_RACER_WINGMAN_BOOT_PART_SIZE}
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_a --align 4096 --size 2048
 part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_b --align 4096 --size 2048
 part /data --ondisk mmcblk --fstype=ext4 --label data --align 4096 --size 4096

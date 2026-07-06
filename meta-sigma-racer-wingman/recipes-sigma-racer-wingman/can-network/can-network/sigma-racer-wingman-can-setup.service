@@ -1,0 +1,15 @@
+[Unit]
+Description=Sigma Racer Wingman SocketCAN interface setup
+DefaultDependencies=no
+Before=vehicle.service
+After=systemd-modules-load.service
+Wants=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=-/etc/sigma-racer-wingman/vehicle.env
+ExecStart=/usr/lib/sigma-racer-wingman/can-setup.sh
+
+[Install]
+WantedBy=multi-user.target

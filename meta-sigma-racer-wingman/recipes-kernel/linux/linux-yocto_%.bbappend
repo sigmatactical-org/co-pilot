@@ -1,3 +1,3 @@
-# sigma-racer-wingman-qemu is qemux86-64 under a custom MACHINE name
-COMPATIBLE_MACHINE:sigma-racer-wingman-qemu = "sigma-racer-wingman-qemu"
-KMACHINE:sigma-racer-wingman-qemu ?= "qemux86-64"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
+SRC_URI:append:sigma-racer-wingman-qemu = " file://can-vcan.cfg"

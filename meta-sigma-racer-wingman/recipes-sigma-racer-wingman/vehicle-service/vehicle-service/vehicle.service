@@ -1,8 +1,9 @@
 [Unit]
 Description=Sigma Racer Wingman Vehicle Signal Abstraction (CAN / telemetry)
-After=network.target
+After=sigma-racer-wingman-can-setup.service network.target
 Before=cluster-ui.service
-Wants=network.target
+Wants=sigma-racer-wingman-can-setup.service network.target
+Requires=sigma-racer-wingman-can-setup.service
 
 [Service]
 Type=simple
