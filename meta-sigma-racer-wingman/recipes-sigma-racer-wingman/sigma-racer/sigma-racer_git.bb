@@ -19,7 +19,7 @@ SRC_URI = " \
 
 UI_ENV = "${@bb.utils.contains('MACHINE', 'sigma-racer-wingman-qemu', 'sigma-racer-wingman-ui-qemu.env', 'sigma-racer-wingman-ui.env', d)}"
 
-SRCREV = "1efb81d00b561b9104b6536fb9733c2eef62ebbb"
+SRCREV = "5d44a007eeec79695bfeaffb0828c910237cff17"
 
 S = "${WORKDIR}/git"
 
