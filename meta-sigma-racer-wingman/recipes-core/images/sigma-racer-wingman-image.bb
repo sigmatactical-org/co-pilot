@@ -7,7 +7,7 @@ LICENSE = "MIT"
 inherit core-image
 
 IMAGE_FEATURES += " \
-    hwcodec \
+    hwcodecs \
 "
 
 # Development conveniences (interactive SSH login + on-target debug tooling) are
@@ -31,7 +31,7 @@ IMAGE_INSTALL = " \
     packagegroup-sigma-racer-wingman-diagnostics \
     packagegroup-sigma-racer-wingman-ota \
     sigma-racer-wingman-services \
-    sigma-racer \
+    sigma-racer-cluster \
     ${CORE_IMAGE_EXTRA_INSTALL} \
 "
 

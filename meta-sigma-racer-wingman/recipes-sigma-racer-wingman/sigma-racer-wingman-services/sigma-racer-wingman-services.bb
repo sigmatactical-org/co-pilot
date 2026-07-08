@@ -45,4 +45,4 @@ FILES:${PN} = " \
     ${systemd_system_unitdir}/sigma-racer-wingman-ui.target \
 "
 
-RDEPENDS:${PN} += "weston weston-init sigma-racer"
+RDEPENDS:${PN} += "weston weston-init sigma-racer-cluster"

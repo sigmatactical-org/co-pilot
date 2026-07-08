@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  sigma-dash (Slint UI)          cluster-ui.service      │
+│  sigma-racer-cluster (Slint UI)          cluster-ui.service      │
 │  Persistent: speed / RPM / warnings                     │
 │  Windows: nav, connectivity, diag, camera, systems…     │
 ├─────────────────────────────────────────────────────────┤
@@ -89,7 +89,7 @@ Application layer stays hardware-agnostic; `vehicle.service` normalizes SocketCA
 | i.MX 8M Plus BSP | Done | `sigma-racer-wingman-imx8mp.conf` |
 | i.MX 95 BSP | Stub | `sigma-racer-wingman-imx95.conf` |
 | Wayland + Weston kiosk | Done | `sigma-racer-wingman-services`, weston bbappend |
-| Rust + Slint UI | Done | `sigma-racer_git.bb` → `sigma-dash` |
+| Rust + Slint UI | Done | `sigma-racer-cluster_git.bb` → `sigma-racer-cluster` |
 | systemd services | Done | `recipes-sigma-racer-wingman/*-service` |
 | SocketCAN | Done | `can-utils`, `vehicle.service` |
 | BlueZ / Wi-Fi | Done | packagegroup connectivity |

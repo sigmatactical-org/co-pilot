@@ -36,6 +36,8 @@ VIRT_ONLY="${1:-}"
 if [[ "${VIRT_ONLY}" != "--virt-only" ]]; then
     clone meta-freescale "https://github.com/Freescale/meta-freescale"
     clone meta-freescale-3rdparty "https://github.com/Freescale/meta-freescale-3rdparty"
+    clone meta-freescale-distro "https://github.com/Freescale/meta-freescale-distro"
+    clone meta-arm "https://git.yoctoproject.org/meta-arm"
 fi
 
 cat <<EOF
@@ -57,9 +59,11 @@ Initialize and build:
 EOF
 else
     cat <<EOF
-Still required (NXP account):
-  meta-imx — download the Scarthgap i.MX BSP bundle from NXP and extract to:
-    ${YOCTO_BASE}/meta-imx
+Still required for hardware builds:
+  meta-imx — Scarthgap i.MX BSP (GitHub):
+    git clone -b scarthgap-6.6.52-2.2.2 --depth 1 https://github.com/nxp-imx/meta-imx.git ${YOCTO_BASE}/meta-imx
+    ln -sfn meta-imx-bsp ${YOCTO_BASE}/meta-imx/meta-bsp
+    ln -sfn meta-imx-sdk ${YOCTO_BASE}/meta-imx/meta-sdk
 
 Then initialize the build environment:
   cd ${SIGMA_RACER_WINGMAN_ROOT}

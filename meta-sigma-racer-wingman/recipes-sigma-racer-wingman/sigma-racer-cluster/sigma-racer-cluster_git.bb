@@ -1,5 +1,5 @@
-SUMMARY = "Sigma Racer instrument cluster UI (sigma-racer / sigma-dash)"
-HOMEPAGE = "https://github.com/sigmatactical-org/sigma-racer"
+SUMMARY = "Sigma Racer Wingman instrument cluster UI"
+HOMEPAGE = "https://github.com/sigmatactical-org/sigma-racer-cluster"
 LICENSE = "MIT | Apache-2.0"
 LIC_FILES_CHKSUM = " \
     file://LICENSE-MIT;md5=a082e45a87ea9bc152345be779914257 \
@@ -8,14 +8,16 @@ LIC_FILES_CHKSUM = " \
 
 inherit cargo cargo-update-recipe-crates systemd externalsrc
 
-EXTERNALSRC = "${SIGMA_RACER_SRC}"
+EXTERNALSRC = "${SIGMA_RACER_CLUSTER_SRC}"
 
 SRC_URI = " \
-    git://github.com/sigmatactical-org/sigma-racer.git;protocol=https;name=racer;nobranch=1 \
+    git://github.com/sigmatactical-org/sigma-racer-cluster.git;protocol=https;name=cluster;nobranch=1 \
     file://cluster-ui.service \
     file://sigma-racer-wingman-ui.env \
     file://sigma-racer-wingman-ui-qemu.env \
 "
+
+require ${THISDIR}/sigma-racer-cluster-crates.inc
 
 UI_ENV = "${@bb.utils.contains('MACHINE', 'sigma-racer-wingman-qemu', 'sigma-racer-wingman-ui-qemu.env', 'sigma-racer-wingman-ui.env', d)}"
 
@@ -39,14 +41,14 @@ DEPENDS += " \
 export SLINT_BACKEND = "femtovg"
 export RUSTFLAGS:append = " --cfg sigma_racer_wingman_embedded"
 
-CARGO_BUILD_FLAGS:append = " --bin sigma-dash"
+CARGO_BUILD_FLAGS:append = " --bin sigma-racer-cluster"
 
 SYSTEMD_SERVICE:${PN} = "cluster-ui.service"
 SYSTEMD_AUTO_ENABLE = "enable"
 
 do_install() {
     install -d ${D}${bindir}
-    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/sigma-dash ${D}${bindir}/sigma-dash
+    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/sigma-racer-cluster ${D}${bindir}/sigma-racer-cluster
 
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/cluster-ui.service ${D}${systemd_system_unitdir}/cluster-ui.service
@@ -55,7 +57,7 @@ do_install() {
 }
 
 FILES:${PN} += " \
-    ${bindir}/sigma-dash \
+    ${bindir}/sigma-racer-cluster \
     ${systemd_system_unitdir}/cluster-ui.service \
     ${sysconfdir}/sigma-racer-wingman/ui.env \
 "
@@ -65,7 +67,5 @@ RDEPENDS:${PN} += " \
     liberation-fonts \
     fontconfig \
 "
-
-RPROVIDES:${PN} += "sigma-dash"
 
 # Requires meta-rust in bblayers.conf

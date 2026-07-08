@@ -10,7 +10,7 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 | Yocto LTS | Scarthgap (5.0) |
 | Init | systemd |
 | Display | Wayland + Weston (kiosk) |
-| UI | Rust + Slint (`sigma-dash`) |
+| UI | Rust + Slint (`sigma-racer-cluster`) |
 | BSP | NXP meta-imx (i.MX 8M Plus / i.MX 95) or QEMU x86-64 (virt testing) |
 | OTA | RAUC A/B (optional, production) |
 
@@ -19,11 +19,11 @@ Custom Yocto Project distribution for an offline-first motorcycle instrument clu
 ```
 sigma-racer-wingman/
 ├── sigma-instrumentation/  → symlink to ../sigma-instrumentation (UI library)
-├── sigma-racer/                 → symlink to ../sigma-racer (sole UI binary)
+├── sigma-racer-cluster/                 → symlink to ../sigma-racer-cluster (sole UI binary)
 ├── conf/                        Sample bblayers.conf and local.conf
 ├── docs/                        Architecture and requirements
 ├── meta-sigma-racer-wingman/     Custom Yocto layer
-│   ├── recipes-sigma-racer-wingman/sigma-racer/   sigma-dash binary + cluster-ui.service
+│   ├── recipes-sigma-racer-wingman/sigma-racer-cluster/   sigma-racer-cluster binary + cluster-ui.service
 │   └── ...
 ├── setup-environment.sh
 └── build/
@@ -31,9 +31,9 @@ sigma-racer-wingman/
 
 ## UI
 
-**sigma-racer** (`sigma-dash`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
+**sigma-racer-cluster** (`sigma-racer-cluster`) is the only UI on the device. Weston runs as a headless Wayland compositor; the cluster app fills the screen via `cluster-ui.service`.
 
-Boot chain: `graphical.target` → `sigma-racer-wingman-ui.target` → `weston.service` + `cluster-ui.service` → `/usr/bin/sigma-dash`
+Boot chain: `graphical.target` → `sigma-racer-wingman-ui.target` → `weston.service` + `cluster-ui.service` → `/usr/bin/sigma-racer-cluster`
 
 ## Quick start
 
@@ -102,7 +102,7 @@ zcat tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigm
 | Service | Purpose |
 |---------|---------|
 | `weston.service` | Wayland compositor (no UI of its own) |
-| `cluster-ui.service` | **sigma-racer** — sole UI (`/usr/bin/sigma-dash`) |
+| `cluster-ui.service` | **sigma-racer-cluster** — sole UI (`/usr/bin/sigma-racer-cluster`) |
 | `vehicle.service` | CAN / vehicle signal abstraction |
 | `navigation.service` | Turn-by-turn / map window |
 | `gps.service` | GNSS input |
@@ -132,19 +132,19 @@ RAUC_CERT_FILE = "${TOPDIR}/../keys/rauc/development-ca.cert.pem"
 
 ## Instrumentation UI integration
 
-The **sigma-racer** product app is linked at `sigma-racer-wingman/sigma-racer` (symlink to `../sigma-racer`) and built as the `sigma-racer` Yocto package. It is the only UI on the image. The **sigma-instrumentation** library repo remains a sibling dependency for the Rust build.
+The **sigma-racer-cluster** product app is linked at `sigma-racer-wingman/sigma-racer-cluster` (symlink to `../sigma-racer-cluster`) and built as the `sigma-racer-cluster` Yocto package. It is the only UI on the image. The **sigma-instrumentation** library repo remains a sibling dependency for the Rust build.
 
 Override source paths in `local.conf`:
 
 ```bitbake
 SIGMA_INSTRUMENTATION_SRC = "/path/to/sigma-instrumentation"
-SIGMA_RACER_SRC = "/path/to/sigma-racer"
+SIGMA_RACER_CLUSTER_SRC = "/path/to/sigma-racer-cluster"
 ```
 
 Desktop dev (windowed):
 
 ```bash
-cd ../sigma-racer && cargo run --bin sigma-dash
+cd ../sigma-racer-cluster && cargo run --bin sigma-racer-cluster
 ```
 
 Panel-accurate local testing (800×480, matches imx8mp / QEMU virt):
@@ -156,7 +156,7 @@ cd ../sigma-instrumentation && cargo virt
 Target kiosk (fullscreen, set automatically when built with `--cfg sigma_racer_wingman_embedded` or `SLINT_FULLSCREEN=1`):
 
 ```bash
-SLINT_FULLSCREEN=1 cargo run --bin sigma-dash
+SLINT_FULLSCREEN=1 cargo run --bin sigma-racer-cluster
 ```
 
 ## UI window model

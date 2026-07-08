@@ -22,6 +22,9 @@ BBLAYERS ?= " \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-openembedded/meta-filesystems \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-freescale \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-freescale-3rdparty \
+    ${SIGMA_RACER_WINGMAN_ROOT}/../meta-freescale-distro \
+    ${SIGMA_RACER_WINGMAN_ROOT}/../meta-arm/meta-arm \
+    ${SIGMA_RACER_WINGMAN_ROOT}/../meta-arm/meta-arm-toolchain \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-rust \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-clang \
     ${SIGMA_RACER_WINGMAN_ROOT}/../meta-imx/meta-bsp \

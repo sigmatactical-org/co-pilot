@@ -1,6 +1,6 @@
 [Unit]
-Description=Sigma Racer instrument cluster UI (sigma-racer)
-Documentation=file:/usr/share/doc/sigma-racer/README
+Description=Sigma Racer Wingman instrument cluster UI
+Documentation=file:/usr/share/doc/sigma-racer-cluster/README
 After=weston.service vehicle.service
 Requires=weston.service
 Wants=vehicle.service
@@ -11,11 +11,11 @@ Conflicts=getty@tty7.service
 Type=simple
 User=cluster
 Group=cluster
-SupplementaryGroups=wayland render video input
+SupplementaryGroups=wayland render video input telemetry
 EnvironmentFile=-/etc/sigma-racer-wingman/ui.env
 ExecStartPre=/bin/mkdir -p /run/user/cluster
 ExecStartPre=/bin/chown cluster:cluster /run/user/cluster
-ExecStart=/usr/bin/sigma-dash
+ExecStart=/usr/bin/sigma-racer-cluster
 Restart=always
 RestartSec=1
 StandardOutput=journal

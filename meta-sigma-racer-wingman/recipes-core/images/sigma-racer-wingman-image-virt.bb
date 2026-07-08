@@ -12,7 +12,7 @@ IMAGE_FEATURES += " \
     debug-tweaks \
 "
 
-IMAGE_FEATURES:remove = "splash hwcodec"
+IMAGE_FEATURES:remove = "splash hwcodecs"
 
 IMAGE_INSTALL = " \
     packagegroup-sigma-racer-wingman-core \
@@ -20,7 +20,7 @@ IMAGE_INSTALL = " \
     packagegroup-sigma-racer-wingman-vehicle \
     sigma-racer-wingman-services \
     vehicle-service \
-    sigma-racer \
+    sigma-racer-cluster \
     ${CORE_IMAGE_EXTRA_INSTALL} \
 "
 

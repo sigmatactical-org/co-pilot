@@ -23,4 +23,8 @@ do_install() {
 
 FILES:${PN} = "${sysconfdir}/rauc/"
 
+RPROVIDES:${PN} += "virtual-rauc-conf"
+RREPLACES:${PN} += "rauc-conf"
+RCONFLICTS:${PN} += "rauc-conf"
+
 RDEPENDS:${PN} += "rauc"

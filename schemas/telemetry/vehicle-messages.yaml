@@ -1,6 +1,6 @@
 # Sigma Racer Wingman vehicle telemetry IPC — message definitions (first draft v0.1)
 #
-# vehicle.service publishes on a Unix stream socket; cluster-ui (sigma-dash) subscribes.
+# vehicle.service publishes on a Unix stream socket; cluster-ui (sigma-racer-cluster) subscribes.
 # All payloads reference VSS paths from schemas/vss/sigma-cluster.vspec.
 #
 # Socket (planned): /run/sigma-racer-wingman/vehicle.sock

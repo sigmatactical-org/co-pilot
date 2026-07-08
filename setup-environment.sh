@@ -102,12 +102,16 @@ fi
 
 mkdir -p "${BUILD_DIR}/conf"
 
-if [[ ! -f "${BUILD_DIR}/conf/local.conf" ]]; then
+if [[ ! -f "${BUILD_DIR}/conf/local.conf" ]] \
+    || grep -q 'package_rpm' "${BUILD_DIR}/conf/local.conf" 2>/dev/null \
+    || ! grep -q 'package_deb' "${BUILD_DIR}/conf/local.conf" 2>/dev/null; then
     cp "${_local_sample}" "${BUILD_DIR}/conf/local.conf"
 fi
 
 if [[ ! -f "${BUILD_DIR}/conf/bblayers.conf" ]] \
-    || ! grep -q meta-sigma-racer-wingman "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null; then
+    || ! grep -q meta-sigma-racer-wingman "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null \
+    || { [[ "${MACHINE}" != "sigma-racer-wingman-qemu" ]] \
+         && ! grep -q meta-arm "${BUILD_DIR}/conf/bblayers.conf" 2>/dev/null; }; then
     sed "s|\${SIGMA_RACER_WINGMAN_ROOT}|${SIGMA_RACER_WINGMAN_ROOT}|g" \
         "${_bblayers_sample}" > "${BUILD_DIR}/conf/bblayers.conf"
 fi
@@ -141,9 +145,12 @@ else
     _required_layers=(
         "${YOCTO_BASE}/meta-openembedded/meta-oe"
         "${YOCTO_BASE}/meta-freescale"
+        "${YOCTO_BASE}/meta-freescale-distro"
         "${YOCTO_BASE}/meta-rust"
         "${YOCTO_BASE}/meta-rauc"
         "${YOCTO_BASE}/meta-imx/meta-bsp"
+        "${YOCTO_BASE}/meta-arm/meta-arm"
+        "${YOCTO_BASE}/meta-arm/meta-arm-toolchain"
     )
 fi
 for _layer in "${_required_layers[@]}"; do

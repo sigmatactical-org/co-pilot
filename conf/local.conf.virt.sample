@@ -5,9 +5,14 @@
 MACHINE ??= "sigma-racer-wingman-qemu"
 DISTRO ??= "sigma-racer-wingman"
 
-# Source sibling Rust repos (default: sigma-racer-wingman/sigma-instrumentation and sigma-racer symlinks)
+# Source sibling Rust repos (default: sigma-racer-wingman/sigma-instrumentation and sigma-racer-cluster symlinks)
 SIGMA_INSTRUMENTATION_SRC ??= "${TOPDIR}/../../sigma-instrumentation"
-SIGMA_RACER_SRC ??= "${TOPDIR}/../../sigma-racer"
+SIGMA_RACER_CLUSTER_SRC ??= "${TOPDIR}/../../sigma-racer-cluster"
+
+#
+# Package format (also set in conf/distro/sigma-racer-wingman.conf)
+#
+PACKAGE_CLASSES ?= "package_deb"
 
 #
 # Parallel build

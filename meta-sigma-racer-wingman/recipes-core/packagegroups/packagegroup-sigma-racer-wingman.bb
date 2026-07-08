@@ -33,7 +33,7 @@ RDEPENDS:${PN}-graphics = " \
     weston-init \
     seatd \
     sigma-racer-wingman-services \
-    sigma-racer \
+    sigma-racer-cluster \
     liberation-fonts \
 "
 
@@ -60,10 +60,9 @@ RDEPENDS:${PN}-connectivity = " \
 "
 
 RDEPENDS:${PN}-diagnostics = " \
-    strace \
-    htop \
     logger-service \
     diagnostics-service \
+    ${@bb.utils.contains('SIGMA_RACER_WINGMAN_DEBUG', '1', 'strace htop', '', d)} \
 "
 
 RDEPENDS:${PN}-ota = " \

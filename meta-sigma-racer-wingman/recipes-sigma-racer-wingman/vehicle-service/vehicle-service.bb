@@ -18,7 +18,7 @@ SRC_URI = " \
     file://sigma-racer-wingman-vehicle.tmpfiles.conf \
 "
 
-require ${THISDIR}/../sigma-instrumentation/sigma-instrumentation-crates.inc
+require ${THISDIR}/vehicle-service-crates.inc
 
 SRCREV = "e81cd1206e2a23f6fbb9cae678616a47760467a3"
 

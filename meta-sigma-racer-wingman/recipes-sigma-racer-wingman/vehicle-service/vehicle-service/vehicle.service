@@ -7,6 +7,8 @@ Requires=sigma-racer-wingman-can-setup.service
 
 [Service]
 Type=simple
+User=vehicle
+Group=telemetry
 EnvironmentFile=-/etc/sigma-racer-wingman/vehicle.env
 ExecStart=/usr/bin/sigma-racer-wingman-vehicle
 Restart=on-failure
