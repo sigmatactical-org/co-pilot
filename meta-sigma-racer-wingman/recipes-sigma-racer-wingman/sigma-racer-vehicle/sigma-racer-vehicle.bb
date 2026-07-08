@@ -20,7 +20,7 @@ SRC_URI = " \
 
 require ${THISDIR}/sigma-racer-vehicle-crates.inc
 
-SRCREV = "${AUTOREV}"
+SRCREV = "5983ff5"
 
 S = "${WORKDIR}/git"
 
