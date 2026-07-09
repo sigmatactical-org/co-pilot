@@ -20,13 +20,13 @@ SRC_URI = " \
 
 require ${THISDIR}/sigma-racer-vehicle-crates.inc
 
-SRCREV = "5983ff5"
+SRCREV = "058ee22"
 
 S = "${WORKDIR}/git"
 
 VEHICLE_ENV = "${@bb.utils.contains('MACHINE', 'sigma-racer-wingman-qemu', 'sigma-racer-vehicle-qemu.env', 'sigma-racer-vehicle.env', d)}"
 
-CARGO_BUILD_FLAGS:append = " --bin sigma-racer-vehicle --features can-socket"
+CARGO_BUILD_FLAGS:append = " --bin sigma-racer-vehicle --features can-socket,rpmsg"
 
 SYSTEMD_SERVICE:${PN} = "sigma-racer-vehicle.service"
 SYSTEMD_AUTO_ENABLE = "enable"

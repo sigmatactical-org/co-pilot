@@ -1,8 +1,9 @@
 #!/bin/sh
-# Bring up physical SocketCAN (FlexCAN on i.MX 8M Plus EVK).
+# Bring up Linux SocketCAN on FLEXCAN2 (Verdin CAN_2 / can1).
+# FLEXCAN1 is owned by the M7 safety core — see sigma-racer-sidearm.
 set -eu
 
-IFACE="${SIGMA_RACER_WINGMAN_CAN_IFACE:-can0}"
+IFACE="${SIGMA_RACER_WINGMAN_CAN_IFACE:-can1}"
 BITRATE="${SIGMA_RACER_WINGMAN_CAN_BITRATE:-1000000}"
 
 if ! ip link show "$IFACE" >/dev/null 2>&1; then

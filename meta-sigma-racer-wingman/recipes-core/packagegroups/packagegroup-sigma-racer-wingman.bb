@@ -42,6 +42,7 @@ RDEPENDS:${PN}-vehicle = " \
     can-network \
     iproute2 \
     sigma-racer-vehicle \
+    sigma-racer-sidearm-firmware \
 "
 
 RDEPENDS:${PN}-navigation = " \

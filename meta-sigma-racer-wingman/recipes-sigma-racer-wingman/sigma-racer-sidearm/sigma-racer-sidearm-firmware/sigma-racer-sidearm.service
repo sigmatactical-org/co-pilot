@@ -1,0 +1,16 @@
+[Unit]
+Description=Sigma Racer M7 safety-core (remoteproc)
+After=multi-user.target
+Wants=remoteproc-selftest.service
+ConditionPathExists=/sys/class/remoteproc/remoteproc0
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '\
+    echo sigma-racer-sidearm.elf > /sys/class/remoteproc/remoteproc0/firmware && \
+    echo start > /sys/class/remoteproc/remoteproc0/state'
+ExecStop=/bin/sh -c 'echo stop > /sys/class/remoteproc/remoteproc0/state || true'
+
+[Install]
+WantedBy=multi-user.target
