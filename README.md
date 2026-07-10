@@ -111,7 +111,7 @@ zcat tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigm
 | `sigma-racer-vehicle.service` | CAN → VSS telemetry publisher (`sigma-racer-vehicle`) |
 | `navigation.service` | Turn-by-turn / map window |
 | `gps.service` | GNSS input |
-| `bluetooth.service` | BlueZ companion phone interface |
+| `bluetooth.service` | BlueZ headset / intercom |
 | `camera.service` | V4L2 camera / PiP |
 | `logger.service` | Ride logs, CAN capture |
 | `ota.service` | RAUC update orchestration |

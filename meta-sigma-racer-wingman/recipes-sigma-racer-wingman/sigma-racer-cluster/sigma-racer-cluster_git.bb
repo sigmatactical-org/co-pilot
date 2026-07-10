@@ -86,6 +86,8 @@ RDEPENDS:${PN} += " \
     weston \
     liberation-fonts \
     fontconfig \
+    bluez5 \
+    connman \
 "
 
 # Requires meta-rust in bblayers.conf

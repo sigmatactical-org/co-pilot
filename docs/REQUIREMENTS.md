@@ -31,6 +31,16 @@ This document is the authoritative requirements specification for the Sigma Sigm
 - The system SHALL include font rendering via FreeType and HarfBuzz.
 - The system SHOULD support deterministic frame rendering for UI stability.
 
+## 3a. Face buttons (HMI)
+
+- The system SHALL provide exactly four physical face buttons.
+- Left column (top → bottom): **Previous**, **Next**.
+- Right column (top → bottom): **Back**, **Select**.
+- Previous / Next SHALL browse UI windows; on Connectivity and Updates they SHALL move the in-window focus (edge Previous/Next leaves the window).
+- Back SHALL leave a Connectivity sub-list to the main menu, or return to the ride home view (Systems) from the main menu / other windows.
+- Select SHALL confirm the focused in-window action (no direct window jump).
+- Desktop keyboard stand-in: **←** Previous, **→** Next, **↑** Back, **↓** Select.
+
 ## 4. Application UI Framework
 
 - The system SHALL support Rust as the primary application language.
@@ -77,12 +87,13 @@ This document is the authoritative requirements specification for the Sigma Sigm
 
 ## 8. Connectivity Subsystem
 
-- The system SHALL support Bluetooth via BlueZ.
-- The system SHALL support smartphone pairing.
-- The system SHALL support notifications from mobile devices.
-- The system SHALL support Wi-Fi networking.
-- The system SHOULD support a companion mobile application interface.
-- The system MAY support music metadata and media control.
+- The system SHALL support Bluetooth via BlueZ (D-Bus) from the instrument cluster.
+- The system SHALL support pairing with rider headset / intercom devices via the Connectivity window.
+- The system SHALL support Wi-Fi networking via connman (D-Bus) from the instrument cluster.
+- The Connectivity window SHALL expose Bluetooth power, device list, Wi-Fi power, and network list controllable with the four face buttons.
+- New PSK Wi-Fi networks that are not already provisioned MAY require `connmanctl` (or equivalent) for the passphrase; saved and open networks SHALL be joinable from the UI.
+- The system MAY support music metadata and media control from paired audio devices.
+- The system SHALL NOT depend on a smartphone or companion mobile application.
 
 ## 9. Camera Subsystem
 
@@ -113,7 +124,6 @@ This document is the authoritative requirements specification for the Sigma Sigm
 - The system SHALL support SQLite or equivalent embedded database.
 - The system SHALL support structured ride logs and trip data storage.
 - The system SHOULD support offline navigation data storage.
-- The system MAY support cloud synchronization via companion app.
 
 ## 13. System Services Architecture
 
