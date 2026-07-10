@@ -90,5 +90,7 @@ fi
 
 # novga skips runqemu's virtio-vga but also skips -display; add both via qemuparams.
 # serialstdio: boot log on the host terminal, not tiny text in the SDL window.
+# Lock guest + SDL to 800×480 — a taller host window height-scales the FB and
+# crops the dial/speed on the right (cover scaling).
 exec runqemu sigma-racer-wingman-qemu "${ROOTFS}" "${use_qbconf}" sdl slirp novga serialstdio \
-    'qemuparams=-display sdl,show-cursor=on -device virtio-gpu-pci' "$@"
+    'qemuparams=-display sdl,show-cursor=on,gl=off -device virtio-vga,xres=800,yres=480' "$@"
