@@ -1,0 +1,55 @@
+header:
+  version: 14
+
+distro: sigma-racer-wingman
+machine: sigma-racer-wingman-qemu
+
+target:
+  - sigma-racer-wingman-image-virt
+
+repos:
+  poky:
+    url: https://git.yoctoproject.org/git/poky
+    branch: scarthgap
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded
+    branch: scarthgap
+    layers:
+      meta-oe:
+      meta-multimedia:
+      meta-networking:
+      meta-python:
+      meta-filesystems:
+
+  meta-rust:
+    url: https://github.com/meta-rust/meta-rust
+    branch: scarthgap
+
+  meta-clang:
+    url: https://github.com/kraj/meta-clang
+    branch: scarthgap
+
+  meta-rauc:
+    url: https://github.com/rauc/meta-rauc
+    branch: scarthgap
+
+  sigma-racer-wingman:
+    path: .
+    layers:
+      meta-sigma-racer-wingman:
+
+local_conf_header:
+  sigma: |
+    PACKAGE_CLASSES = "package_deb"
+    DL_DIR = "${TOPDIR}/../downloads"
+    SSTATE_DIR = "${TOPDIR}/../sstate-cache"
+    SIGMA_INSTRUMENTATION_SRC = "${TOPDIR}/../../sigma-instrumentation"
+    SIGMA_RACER_CLUSTER_SRC = "${TOPDIR}/../../sigma-racer-cluster"
+    SIGMA_RACER_VEHICLE_SRC = "${TOPDIR}/../../sigma-racer-vehicle"
+    SIGMA_RACER_TELEMETRY_SRC = "${TOPDIR}/../../sigma-racer-telemetry"
+    SIGMA_RACER_SIDEARM_SRC = "${TOPDIR}/../../sigma-racer-sidearm"

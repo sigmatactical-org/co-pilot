@@ -78,6 +78,12 @@ bitbake sigma-racer-wingman-image
 
 Output: `build/tmp/deploy/images/sigma-racer-wingman-imx8mp/sigma-racer-wingman-image-sigma-racer-wingman-imx8mp.wic.gz`
 
+## CI/CD
+
+Rust crates and Yocto image builds are automated via GitHub Actions. Heavy bitbake jobs run on a **self-hosted** runner; binaries publish to object storage, not GitHub artifact quotas.
+
+See **[docs/CI.md](docs/CI.md)** for runner setup, tagging (`wingman-*`, sidearm `v*`), release manifest, and OTA catalog configuration.
+
 ### Virtual testing (800×480 QEMU)
 
 Run the full Sigma Racer Wingman stack locally without NXP hardware — same panel resolution as `sigma-racer-wingman-imx8mp`:

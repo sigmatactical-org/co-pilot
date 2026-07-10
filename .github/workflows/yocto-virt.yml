@@ -1,0 +1,70 @@
+name: Yocto virt
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "meta-sigma-racer-wingman/**"
+      - "conf/**"
+      - "scripts/**"
+      - "setup-environment.sh"
+      - "release-manifest.json"
+      - "kas.yml"
+      - ".github/workflows/yocto-virt.yml"
+  pull_request:
+    paths:
+      - "meta-sigma-racer-wingman/**"
+      - "conf/**"
+      - "scripts/**"
+      - "setup-environment.sh"
+      - "release-manifest.json"
+      - "kas.yml"
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: yocto-virt-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bitbake-virt:
+    runs-on: [self-hosted, yocto]
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: embedded/sigma-racer-wingman
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sigmatactical-org/sigma-instrumentation
+          path: embedded/sigma-instrumentation
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sigmatactical-org/sigma-racer-cluster
+          path: embedded/sigma-racer-cluster
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sigmatactical-org/sigma-racer-telemetry
+          path: embedded/sigma-racer-telemetry
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sigmatactical-org/sigma-racer-sidearm
+          path: embedded/sigma-racer-sidearm
+
+      - uses: actions/checkout@v4
+        with:
+          repository: sigmatactical-org/sigma-racer-vehicle
+          path: embedded/sigma-racer-vehicle
+
+      - name: Bitbake virt image
+        env:
+          EMBEDDED_ROOT: ${{ github.workspace }}/embedded
+          SKIP_SIBLING_CHECKOUT: "1"
+        run: |
+          chmod +x embedded/sigma-racer-wingman/scripts/ci/*.sh
+          embedded/sigma-racer-wingman/scripts/ci/bitbake-virt.sh

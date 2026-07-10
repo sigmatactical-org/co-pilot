@@ -1,0 +1,96 @@
+name: Yocto release
+
+on:
+  push:
+    tags:
+      - "wingman-*"
+  workflow_dispatch:
+    inputs:
+      image_version:
+        description: Image/catalog version (overrides manifest)
+        required: false
+        type: string
+      channel:
+        description: OTA channel
+        required: false
+        default: dev
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yocto-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: [self-hosted, yocto]
+    timeout-minutes: 720
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: embedded/sigma-racer-wingman
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: meta
+        working-directory: embedded/sigma-racer-wingman
+        run: |
+          if [[ -n "${{ inputs.image_version }}" ]]; then
+            ver="${{ inputs.image_version }}"
+          elif [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            ver="${GITHUB_REF_NAME#wingman-}"
+          else
+            ver="$(python3 -c 'import json; print(json.load(open("release-manifest.json"))["image_version"])')"
+          fi
+          channel="${{ inputs.channel || 'dev' }}"
+          echo "version=${ver}" >> "$GITHUB_OUTPUT"
+          echo "channel=${channel}" >> "$GITHUB_OUTPUT"
+
+      - name: Materialize sibling repos from manifest
+        env:
+          EMBEDDED_ROOT: ${{ github.workspace }}/embedded
+        run: |
+          chmod +x embedded/sigma-racer-wingman/scripts/ci/*.sh
+          embedded/sigma-racer-wingman/scripts/ci/prepare-workspace.sh
+
+      - name: Build production image
+        env:
+          EMBEDDED_ROOT: ${{ github.workspace }}/embedded
+          RAUC_KEY_FILE: ${{ secrets.RAUC_KEY_FILE }}
+          RAUC_CERT_FILE: ${{ secrets.RAUC_CERT_FILE }}
+          SIGMA_RELEASE_NOTES: "Wingman ${{ steps.meta.outputs.version }}"
+          SIGMA_UPDATES_CHANNEL: ${{ steps.meta.outputs.channel }}
+          SIGMA_UPDATES_BASE_URL: ${{ vars.SIGMA_UPDATES_BASE_URL }}
+        run: embedded/sigma-racer-wingman/scripts/ci/bitbake-release.sh
+
+      - name: Publish to object store
+        if: ${{ secrets.SIGMA_ARTIFACT_ENDPOINT != '' }}
+        env:
+          SIGMA_ARTIFACT_ENDPOINT: ${{ secrets.SIGMA_ARTIFACT_ENDPOINT }}
+          SIGMA_ARTIFACT_ACCESS_KEY: ${{ secrets.SIGMA_ARTIFACT_ACCESS_KEY }}
+          SIGMA_ARTIFACT_SECRET_KEY: ${{ secrets.SIGMA_ARTIFACT_SECRET_KEY }}
+          SIGMA_ARTIFACT_BUCKET: ${{ vars.SIGMA_ARTIFACT_BUCKET }}
+          SIGMA_ARTIFACT_REGION: ${{ vars.SIGMA_ARTIFACT_REGION }}
+          SIGMA_UPDATES_CHANNEL: ${{ steps.meta.outputs.channel }}
+          SIGMA_UPDATES_BASE_URL: ${{ vars.SIGMA_UPDATES_BASE_URL }}
+        run: |
+          embedded/sigma-racer-wingman/scripts/ci/publish-artifacts.sh \
+            embedded/sigma-racer-wingman/dist/release/sigma-racer-wingman-imx8mp
+
+      - name: Create GitHub release (metadata only)
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Wingman ${{ steps.meta.outputs.version }}
+          generate_release_notes: true
+          body: |
+            OTA channel: `${{ steps.meta.outputs.channel }}`
+            Image version: `${{ steps.meta.outputs.version }}`
+
+            Binaries are published to object storage when `SIGMA_ARTIFACT_*` secrets are configured.
+            See `docs/CI.md` for catalog URLs and RAUC install steps.
+          files: |
+            embedded/sigma-racer-wingman/dist/release/sigma-racer-wingman-imx8mp/catalog-latest.json
