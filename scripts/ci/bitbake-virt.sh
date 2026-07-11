@@ -18,8 +18,10 @@ fi
 "${WINGMAN_ROOT}/scripts/bootstrap-layers.sh" --virt-only
 
 # setup-environment.sh must be sourced so bitbake inherits the environment.
+set +u
 # shellcheck source=/dev/null
 source "${WINGMAN_ROOT}/setup-environment.sh" sigma-racer-wingman-qemu build-virt
+set -u
 
 bitbake sigma-racer-wingman-image-virt
 

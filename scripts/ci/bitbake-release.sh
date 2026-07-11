@@ -27,7 +27,9 @@ EOF
 fi
 
 # shellcheck source=/dev/null
+set +u
 source "${WINGMAN_ROOT}/setup-environment.sh" "${MACHINE}" "${BUILD_DIR}"
+set -u
 
 if ! grep -q '^ACCEPT_FSL_EULA' conf/local.conf 2>/dev/null; then
   echo 'ACCEPT_FSL_EULA = "1"' >> conf/local.conf
