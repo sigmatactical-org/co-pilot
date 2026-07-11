@@ -13,6 +13,9 @@ PV = "0.1.0"
 
 inherit allarch systemd externalsrc
 
+# Host cargo build scripts need a native C compiler in bitbake's stripped PATH.
+DEPENDS += "gcc-native"
+
 EXTERNALSRC = "${SIGMA_RACER_SIDEARM_SRC}"
 
 SRC_URI = "file://sigma-racer-sidearm.service"
@@ -48,10 +51,12 @@ do_compile() {
         bbfatal "host cargo not found (tried ${SIDEARM_CARGO}). Install rustup + target ${SIDEARM_CARGO_TARGET}, or pre-build with: (cd ${SIGMA_RACER_SIDEARM_SRC} && cargo build --release --no-default-features --features firmware)"
     fi
 
-    # rustup shims need their bin dir on PATH for rustc/rustdoc.
-    export PATH="$(dirname "$CARGO"):$PATH"
+    # rustup shims need their bin dir on PATH for rustc/rustdoc; build.rs needs cc.
+    export PATH="${STAGING_BINDIR_NATIVE}:${STAGING_BINDIRTOOLCHAIN_NATIVE}:/usr/bin:/bin:$(dirname "$CARGO"):${PATH}"
+    export CC="${CC:-${STAGING_BINDIR_NATIVE}/gcc}"
+    export HOST_CC="${HOST_CC:-$CC}"
 
-    bbnote "Building M7 firmware with $CARGO"
+    bbnote "Building M7 firmware with $CARGO (CC=$CC)"
     "$CARGO" build --release \
         --manifest-path="${SIGMA_RACER_SIDEARM_SRC}/Cargo.toml" \
         --target ${SIDEARM_CARGO_TARGET} \
