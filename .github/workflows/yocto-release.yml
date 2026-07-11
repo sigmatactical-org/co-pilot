@@ -65,6 +65,25 @@ jobs:
           SIGMA_UPDATES_BASE_URL: ${{ vars.SIGMA_UPDATES_BASE_URL }}
         run: embedded/sigma-racer-wingman/scripts/ci/bitbake-release.sh
 
+      - name: Checkout updates (CLI)
+        uses: actions/checkout@v5
+        with:
+          repository: sigmatactical-org/updates
+          path: it/updates
+          fetch-depth: 1
+
+      - name: Publish product packages
+        env:
+          UPDATES_SRC: ${{ github.workspace }}/it/updates
+          SIGMA_UPDATES_URL: ${{ vars.SIGMA_IDENTITY_PUBLIC_URL }}/api
+          SIGMA_OIDC_CLIENT_ID: ${{ secrets.SIGMA_OIDC_CLIENT_ID }}
+          SIGMA_OIDC_CLIENT_SECRET: ${{ secrets.SIGMA_OIDC_CLIENT_SECRET }}
+          SIGMA_OIDC_TOKEN_URL: ${{ vars.SIGMA_OIDC_TOKEN_URL }}
+          SIGMA_OIDC_ISSUER: ${{ vars.SIGMA_OIDC_ISSUER }}
+        run: |
+          chmod +x embedded/sigma-racer-wingman/scripts/ci/publish-product-debs.sh
+          embedded/sigma-racer-wingman/scripts/ci/publish-product-debs.sh
+
       - name: Publish to object store
         if: vars.SIGMA_PUBLISH_ARTIFACTS == 'true'
         env:
@@ -90,7 +109,8 @@ jobs:
             OTA channel: `${{ steps.meta.outputs.channel }}`
             Image version: `${{ steps.meta.outputs.version }}`
 
-            Binaries are published to object storage when `SIGMA_ARTIFACT_*` secrets are configured.
+            Product `.deb` packages are published via `sigma-updates-cli` (OIDC client-credentials → Identity).
+            Image blobs are published to object storage when `SIGMA_PUBLISH_ARTIFACTS=true`.
             See `docs/CI.md` for catalog URLs and RAUC install steps.
           files: |
             embedded/sigma-racer-wingman/dist/release/sigma-racer-wingman-imx8mp/catalog-latest.json

@@ -114,7 +114,7 @@ Also bump `image_version` / `distro_version` and Yocto recipe `SRCREV` values wh
 | Component | Tag format | Publishes |
 |-----------|------------|-----------|
 | M7 firmware | `v0.2.0` | `.deb` (GitHub Release + optional object store) |
-| Wingman image | `wingman-1.0.0` | RAUC bundle + catalog JSON |
+| Wingman image | `wingman-1.0.0` | Product `.deb`s via updates CLI + optional RAUC/image object-store |
 
 ### Sidearm deb release
 
@@ -134,12 +134,42 @@ git tag wingman-1.0.0
 git push origin wingman-1.0.0
 ```
 
-## Object storage & OTA catalog
+After bitbake, the release workflow:
 
-Configure repository **secrets** and **variables** on `sigma-racer-wingman`:
+1. **Publishes product `.deb`s** via `scripts/ci/publish-product-debs.sh` → `sigma-updates-cli` (OIDC client-credentials → Identity `/api/v1/packages`). Packages: `sigma-racer-sidearm-firmware`, `sigma-racer-vehicle`, `sigma-racer-cluster`, `sigma-racer-wingman-services` (runtime only; no `-dev`/`-dbg`).
+2. Optionally **uploads image blobs** (`.wic` / `.raucb` / catalog) to object storage when `SIGMA_PUBLISH_ARTIFACTS=true`.
+
+## Product package publish (Identity + CLI)
+
+Configure on `sigma-racer-wingman`:
 
 | Name | Type | Purpose |
 |------|------|---------|
+| `SIGMA_OIDC_CLIENT_ID` | secret | Keycloak client `sigma-updates-ci` (service account) |
+| `SIGMA_OIDC_CLIENT_SECRET` | secret | Client secret |
+| `SIGMA_OIDC_TOKEN_URL` | variable | Token endpoint (preferred) |
+| `SIGMA_OIDC_ISSUER` | variable | Issuer URL if token URL unset (`…/realms/multcorp`) |
+| `SIGMA_IDENTITY_PUBLIC_URL` | variable | Identity public base (CLI uses `{url}/api`) |
+
+Dev Keycloak ships client `sigma-updates-ci` with realm role `sigma-admin` on its service account (`identity/dev_realm.json`; also ensured by `platform/scripts/seed-keycloak-dev-users.sh`).
+
+Local smoke:
+
+```bash
+export SIGMA_UPDATES_URL=https://identity.sigma.localtest.me:30443/api
+export SIGMA_OIDC_CLIENT_ID=sigma-updates-ci
+export SIGMA_OIDC_CLIENT_SECRET=dev-sigma-updates-ci-secret-change-me
+export SIGMA_OIDC_ISSUER=https://keycloak.sigma.localtest.me:30443/realms/multcorp
+./scripts/ci/publish-product-debs.sh
+```
+
+## Object storage & OTA catalog
+
+Optional image-blob publish (gated by **`SIGMA_PUBLISH_ARTIFACTS=true`**):
+
+| Name | Type | Purpose |
+|------|------|---------|
+| `SIGMA_PUBLISH_ARTIFACTS` | variable | Set to `true` to enable S3 upload step |
 | `SIGMA_ARTIFACT_ENDPOINT` | secret | S3/MinIO endpoint URL |
 | `SIGMA_ARTIFACT_ACCESS_KEY` | secret | Access key |
 | `SIGMA_ARTIFACT_SECRET_KEY` | secret | Secret key |
