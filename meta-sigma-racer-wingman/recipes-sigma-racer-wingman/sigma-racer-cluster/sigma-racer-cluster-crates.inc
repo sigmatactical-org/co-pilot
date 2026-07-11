@@ -384,7 +384,7 @@ SRC_URI += " \
     crate://crates.io/serde_spanned/0.6.9 \
     crate://crates.io/shlex/1.3.0 \
     crate://crates.io/shlex/2.0.1 \
-    crate://crates.io/sigma-bounded/0.1.2 \
+    crate://crates.io/sigma-bounded/0.1.3 \
     crate://crates.io/signal-hook-registry/1.4.8 \
     crate://crates.io/simd-adler32/0.3.9 \
     crate://crates.io/simd_cesu8/1.1.1 \
@@ -977,7 +977,7 @@ SRC_URI[serde_repr-0.1.20.sha256sum] = "175ee3e80ae9982737ca543e96133087cbd9a485
 SRC_URI[serde_spanned-0.6.9.sha256sum] = "bf41e0cfaf7226dca15e8197172c295a782857fcb97fad1808a166870dee75a3"
 SRC_URI[shlex-1.3.0.sha256sum] = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 SRC_URI[shlex-2.0.1.sha256sum] = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
-SRC_URI[sigma-bounded-0.1.2.sha256sum] = "dc30ea1c0d311073ceba69995b1896162625bbcfe48cbea0f6529402c43d29ca"
+SRC_URI[sigma-bounded-0.1.3.sha256sum] = "977e65031cbd5b33463cdb8313fb06a2fb0b548cd81743c18c2d3a639e98a0be"
 SRC_URI[signal-hook-registry-1.4.8.sha256sum] = "c4db69cba1110affc0e9f7bcd48bbf87b3f4fc7c61fc9155afd4c469eb3d6c1b"
 SRC_URI[simd-adler32-0.3.9.sha256sum] = "703d5c7ef118737c72f1af64ad2f6f8c5e1921f818cdcb97b8fe6fc69bf66214"
 SRC_URI[simd_cesu8-1.1.1.sha256sum] = "94f90157bb87cddf702797c5dadfa0be7d266cdf49e22da2fcaa32eff75b2c33"
