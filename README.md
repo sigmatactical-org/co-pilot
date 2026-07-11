@@ -184,6 +184,12 @@ See `docs/ARCHITECTURE.md` for service boundaries and data flow.
 
 Full specification: `docs/REQUIREMENTS.md`
 
+## Brand & artwork
+
+© Sigma Tactical Group. **All rights reserved.**
+
+The Sigma Tactical Group name, logos, marks, artwork, and visual identity are **proprietary**. They are not covered by this repository's source-code license. See [BRANDING.md](BRANDING.md).
+
 ## License
 
 Layer metadata: MIT. Image contents inherit respective upstream licenses. NXP BSP components require EULA acceptance.
