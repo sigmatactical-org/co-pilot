@@ -1,5 +1,8 @@
 # Sigma Racer Wingman — Motorcycle Instrument Cluster Yocto Distribution
 
+[![Yocto virt](https://github.com/sigmatactical-org/sigma-racer-wingman/actions/workflows/yocto-virt.yml/badge.svg)](https://github.com/sigmatactical-org/sigma-racer-wingman/actions/workflows/yocto-virt.yml)
+[![Yocto release](https://github.com/sigmatactical-org/sigma-racer-wingman/actions/workflows/yocto-release.yml/badge.svg)](https://github.com/sigmatactical-org/sigma-racer-wingman/actions/workflows/yocto-release.yml)
+
 Custom Yocto Project distribution for an offline-first motorcycle instrument cluster on NXP i.MX 8M Plus / i.MX 95 class hardware.
 
 ## Overview
