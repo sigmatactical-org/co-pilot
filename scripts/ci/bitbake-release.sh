@@ -72,7 +72,8 @@ for pattern in '*.wic.gz' '*.wic' '*.raucb' '*.manifest' '*.testdata.json'; do
   done
 done
 
-"${SCRIPT_DIR}/write-catalog.sh" "${STAGING}"
+# setup-environment.sh overwrites SCRIPT_DIR; keep using the CI scripts dir.
+"${CI_SCRIPT_DIR}/write-catalog.sh" "${STAGING}"
 
 echo
 echo "Release artifacts staged in ${STAGING}"
