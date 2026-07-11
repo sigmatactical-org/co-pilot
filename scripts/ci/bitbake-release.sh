@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CI_SCRIPT_DIR="${SCRIPT_DIR}"
 WINGMAN_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 EMBEDDED_ROOT="${EMBEDDED_ROOT:-$(cd "${WINGMAN_ROOT}/.." && pwd)}"
 MACHINE="${MACHINE:-sigma-racer-wingman-imx8mp}"
@@ -34,7 +35,7 @@ set +u
 source "${WINGMAN_ROOT}/setup-environment.sh" "${MACHINE}" "${BUILD_DIR}"
 set -u
 
-"${SCRIPT_DIR}/prepare-bitbake.sh" "${BUILD_DIR}"
+"${CI_SCRIPT_DIR}/prepare-bitbake.sh" "${BUILD_DIR}"
 
 if ! grep -q '^ACCEPT_FSL_EULA' conf/local.conf 2>/dev/null; then
   echo 'ACCEPT_FSL_EULA = "1"' >> conf/local.conf

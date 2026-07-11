@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CI_SCRIPT_DIR="${SCRIPT_DIR}"
 WINGMAN_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 EMBEDDED_ROOT="${EMBEDDED_ROOT:-$(cd "${WINGMAN_ROOT}/.." && pwd)}"
 
@@ -26,7 +27,7 @@ set +u
 source "${WINGMAN_ROOT}/setup-environment.sh" sigma-racer-wingman-qemu build-virt
 set -u
 
-"${SCRIPT_DIR}/prepare-bitbake.sh" build-virt
+"${CI_SCRIPT_DIR}/prepare-bitbake.sh" build-virt
 
 bitbake sigma-racer-wingman-image-virt
 
