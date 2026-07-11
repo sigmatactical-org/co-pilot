@@ -19,18 +19,26 @@ fi
 "${WINGMAN_ROOT}/scripts/bootstrap-layers.sh" --virt-only
 
 # shellcheck source=/dev/null
+export SIGMA_BUILD_SUBDIR=build-virt
 source "${SCRIPT_DIR}/resolve-cache-dirs.sh"
+BUILD_DIR="${SIGMA_BUILD_DIR:-build-virt}"
 
 # setup-environment.sh must be sourced so bitbake inherits the environment.
 set +u
 # shellcheck source=/dev/null
-source "${WINGMAN_ROOT}/setup-environment.sh" sigma-racer-wingman-qemu build-virt
+source "${WINGMAN_ROOT}/setup-environment.sh" sigma-racer-wingman-qemu "${BUILD_DIR}"
 set -u
 
-"${CI_SCRIPT_DIR}/prepare-bitbake.sh" build-virt
+"${CI_SCRIPT_DIR}/prepare-bitbake.sh" "${BUILD_DIR}"
 
 bitbake sigma-racer-wingman-image-virt
 
+if [[ "${BUILD_DIR}" = /* ]]; then
+  DEPLOY_DIR="${BUILD_DIR}/tmp/deploy/images"
+else
+  DEPLOY_DIR="${WINGMAN_ROOT}/${BUILD_DIR}/tmp/deploy/images"
+fi
+
 echo
 echo "virt image:"
-find "${WINGMAN_ROOT}/build-virt/tmp/deploy/images" -name '*.wic*' -o -name '*.manifest' 2>/dev/null | head -20
+find "${DEPLOY_DIR}" -name '*.wic*' -o -name '*.manifest' 2>/dev/null | head -20

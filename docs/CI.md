@@ -46,11 +46,12 @@ embedded/sigma-racer-wingman/downloads/
 embedded/sigma-racer-wingman/sstate-cache/
 ```
 
-CI bitbake scripts call `scripts/ci/resolve-cache-dirs.sh` before `setup-environment.sh`. When the host dev tree exists at `$HOME/Source/sigma/embedded/sigma-racer-wingman/`, CI reuses those `downloads/` and `sstate-cache/` dirs instead of warming a separate copy under the Actions workspace. Override explicitly:
+CI bitbake scripts call `scripts/ci/resolve-cache-dirs.sh` before `setup-environment.sh`. When the host dev tree exists at `$HOME/Source/sigma/embedded/sigma-racer-wingman/`, CI reuses those `downloads/`, `sstate-cache/`, and `build-virt/` dirs instead of warming a separate copy under the Actions workspace (the deep `_work/...` path can make `apt-get` fail during `do_rootfs` with `File name too long`). Override explicitly:
 
 ```bash
 export SIGMA_DL_DIR=/path/to/downloads
 export SIGMA_SSTATE_DIR=/path/to/sstate-cache
+export SIGMA_BUILD_DIR=/path/to/build-virt
 ```
 
 ### Virt integration build

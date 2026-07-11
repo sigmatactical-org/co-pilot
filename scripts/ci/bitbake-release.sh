@@ -28,7 +28,9 @@ EOF
 fi
 
 # shellcheck source=/dev/null
+export SIGMA_BUILD_SUBDIR="${BUILD_DIR}"
 source "${SCRIPT_DIR}/resolve-cache-dirs.sh"
+BUILD_DIR="${SIGMA_BUILD_DIR:-${BUILD_DIR}}"
 
 # shellcheck source=/dev/null
 set +u
@@ -51,7 +53,11 @@ fi
 
 bitbake sigma-racer-wingman-image
 
-DEPLOY="${WINGMAN_ROOT}/${BUILD_DIR}/tmp/deploy/images/${MACHINE}"
+if [[ "${BUILD_DIR}" = /* ]]; then
+  DEPLOY="${BUILD_DIR}/tmp/deploy/images/${MACHINE}"
+else
+  DEPLOY="${WINGMAN_ROOT}/${BUILD_DIR}/tmp/deploy/images/${MACHINE}"
+fi
 STAGING="${WINGMAN_ROOT}/dist/release/${MACHINE}"
 rm -rf "${STAGING}"
 mkdir -p "${STAGING}"

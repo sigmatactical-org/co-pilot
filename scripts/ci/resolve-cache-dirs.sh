@@ -17,8 +17,16 @@ if [[ -z "${SIGMA_SSTATE_DIR:-}" && -d "${_host_root}/sstate-cache" ]]; then
   export SIGMA_SSTATE_DIR="${_host_root}/sstate-cache"
 fi
 
-if [[ -n "${SIGMA_DL_DIR:-}" || -n "${SIGMA_SSTATE_DIR:-}" ]]; then
-  echo "resolve-cache-dirs: using shared host caches"
+# Deep GHA workspace paths make apt's file:// list filenames exceed NAME_MAX
+# during image do_rootfs. Reuse the host dev-tree build dir when available.
+if [[ -z "${SIGMA_BUILD_DIR:-}" && -d "${_host_root}" ]]; then
+  _build_subdir="${SIGMA_BUILD_SUBDIR:-build-virt}"
+  export SIGMA_BUILD_DIR="${_host_root}/${_build_subdir}"
+fi
+
+if [[ -n "${SIGMA_DL_DIR:-}" || -n "${SIGMA_SSTATE_DIR:-}" || -n "${SIGMA_BUILD_DIR:-}" ]]; then
+  echo "resolve-cache-dirs: using shared host paths"
   [[ -n "${SIGMA_DL_DIR:-}" ]] && echo "  DL_DIR=${SIGMA_DL_DIR}"
   [[ -n "${SIGMA_SSTATE_DIR:-}" ]] && echo "  SSTATE_DIR=${SIGMA_SSTATE_DIR}"
+  [[ -n "${SIGMA_BUILD_DIR:-}" ]] && echo "  BUILD_DIR=${SIGMA_BUILD_DIR}"
 fi

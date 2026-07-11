@@ -27,7 +27,7 @@ _sigma_racer_wingman_fail() {
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 SIGMA_RACER_WINGMAN_ROOT="${SCRIPT_DIR}"
-EMBEDDED_ROOT="$(cd "${SIGMA_RACER_WINGMAN_ROOT}/.." && pwd)"
+EMBEDDED_ROOT="${EMBEDDED_ROOT:-$(cd "${SIGMA_RACER_WINGMAN_ROOT}/.." && pwd)}"
 YOCTO_BASE="${YOCTO_BASE:-${EMBEDDED_ROOT}}"
 POKY_DIR="${YOCTO_BASE}/poky"
 MACHINE="${1:-sigma-racer-wingman-imx8mp}"
@@ -144,6 +144,33 @@ _sigma_apply_cache_dir() {
 }
 _sigma_apply_cache_dir DL_DIR "${SIGMA_DL_DIR:-}"
 _sigma_apply_cache_dir SSTATE_DIR "${SIGMA_SSTATE_DIR:-}"
+
+# Short-path CI builds live outside the wingman tree; TOPDIR-relative EXTERNALSRC
+# paths would point at the host embedded/ checkout instead of the GHA workspace.
+_sigma_apply_external_src_paths() {
+    local embedded_root="$1"
+    local entry var repo
+    local vars=(
+        SIGMA_INSTRUMENTATION_SRC:sigma-instrumentation
+        SIGMA_RACER_CLUSTER_SRC:sigma-racer-cluster
+        SIGMA_RACER_VEHICLE_SRC:sigma-racer-vehicle
+        SIGMA_RACER_TELEMETRY_SRC:sigma-racer-telemetry
+        SIGMA_RACER_SIDEARM_SRC:sigma-racer-sidearm
+    )
+    for entry in "${vars[@]}"; do
+        var="${entry%%:*}"
+        repo="${entry#*:}"
+        sed -i "/^${var} /d" conf/local.conf
+        echo "${var} = \"${embedded_root}/${repo}\"" >> conf/local.conf
+    done
+}
+
+case "${BUILD_DIR}" in
+    "${SIGMA_RACER_WINGMAN_ROOT}/build"|"${SIGMA_RACER_WINGMAN_ROOT}/build-virt") ;;
+    *)
+        _sigma_apply_external_src_paths "${EMBEDDED_ROOT}"
+        ;;
+esac
 
 # BitBake reads machine layers from BBLAYERS — warn about missing optional layers
 _missing_layers=()
