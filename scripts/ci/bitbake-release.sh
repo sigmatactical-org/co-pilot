@@ -34,6 +34,8 @@ set +u
 source "${WINGMAN_ROOT}/setup-environment.sh" "${MACHINE}" "${BUILD_DIR}"
 set -u
 
+"${SCRIPT_DIR}/prepare-bitbake.sh" "${BUILD_DIR}"
+
 if ! grep -q '^ACCEPT_FSL_EULA' conf/local.conf 2>/dev/null; then
   echo 'ACCEPT_FSL_EULA = "1"' >> conf/local.conf
 fi

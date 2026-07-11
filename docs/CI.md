@@ -68,6 +68,8 @@ Local equivalent:
 ./scripts/ci/bitbake-virt.sh
 ```
 
+CI bitbake scripts call `prepare-bitbake.sh` after `setup-environment.sh` to kill any stale cooker/hashserv left by a cancelled prior run on the same workspace.
+
 ### Production release build
 
 Workflow: `.github/workflows/yocto-release.yml`

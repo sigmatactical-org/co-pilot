@@ -26,6 +26,8 @@ set +u
 source "${WINGMAN_ROOT}/setup-environment.sh" sigma-racer-wingman-qemu build-virt
 set -u
 
+"${SCRIPT_DIR}/prepare-bitbake.sh" build-virt
+
 bitbake sigma-racer-wingman-image-virt
 
 echo
