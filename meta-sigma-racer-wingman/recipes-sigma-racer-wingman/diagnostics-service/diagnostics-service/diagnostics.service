@@ -1,10 +1,13 @@
 [Unit]
-Description=Sigma Racer Wingman diagnostics subsystem
-After=network.target
+Description=Sigma Racer Wingman telemetry WiFi relay
+Documentation=man:sigma-telemetry-relay(8)
+After=network.target sigma-racer-vehicle.service
+Wants=sigma-racer-vehicle.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/sigma-racer-wingman-diagnostics
+EnvironmentFile=-/etc/sigma-racer-wingman/diagnostics.env
+ExecStart=/usr/bin/sigma-telemetry-relay
 Restart=on-failure
 RestartSec=2
 StandardOutput=journal

@@ -68,7 +68,7 @@ RDEPENDS:${PN}-connectivity = " \
 
 RDEPENDS:${PN}-diagnostics = " \
     logger-service \
-    diagnostics-service \
+    sigma-telemetry-relay \
     ${@bb.utils.contains('SIGMA_RACER_WINGMAN_DEBUG', '1', 'strace htop', '', d)} \
 "
 
