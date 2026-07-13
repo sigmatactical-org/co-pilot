@@ -145,11 +145,13 @@ Configure on `sigma-racer-wingman`:
 
 | Name | Type | Purpose |
 |------|------|---------|
-| `SIGMA_OIDC_CLIENT_ID` | secret | Keycloak client `sigma-updates-ci` (service account) |
+| `SIGMA_UPDATES_PUBLISH_URL` | variable | Package publish target. Kind: `http://updates.sigma.localtest.me:30080` (with `SIGMA_INTERNAL_TOKEN`). Production: Identity `…/api` (with OIDC secrets). |
+| `SIGMA_INTERNAL_TOKEN` | secret | Shared secret for direct updates publish (kind/localdev) |
+| `SIGMA_OIDC_CLIENT_ID` | secret | Keycloak client `sigma-updates-ci` (service account); used when publish URL is Identity |
 | `SIGMA_OIDC_CLIENT_SECRET` | secret | Client secret |
 | `SIGMA_OIDC_TOKEN_URL` | variable | Token endpoint (preferred) |
 | `SIGMA_OIDC_ISSUER` | variable | Issuer URL if token URL unset (`…/realms/multcorp`) |
-| `SIGMA_IDENTITY_PUBLIC_URL` | variable | Identity public base (CLI uses `{url}/api`). Kind: `https://identity.sigma.localtest.me:30443` |
+| `SIGMA_IDENTITY_PUBLIC_URL` | variable | Identity public base (docs / browser); Kind: `https://identity.sigma.localtest.me:30443` |
 
 Dev Keycloak ships client `sigma-updates-ci` with realm role `sigma-admin` on its service account (`identity/dev_realm.json`; also ensured by `platform/scripts/seed-keycloak-dev-users.sh`).
 

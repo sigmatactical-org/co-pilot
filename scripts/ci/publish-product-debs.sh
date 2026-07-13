@@ -6,10 +6,10 @@
 #   BUILD_DIR=/path/to/build ./scripts/ci/publish-product-debs.sh
 #
 # Required env:
-#   SIGMA_UPDATES_URL          Identity API base ending in /api (or updates base for --token)
-#   SIGMA_OIDC_CLIENT_ID
-#   SIGMA_OIDC_CLIENT_SECRET
-#   SIGMA_OIDC_TOKEN_URL or SIGMA_OIDC_ISSUER
+#   SIGMA_UPDATES_URL          Identity …/api (OIDC) or updates base (shared token)
+# And one of:
+#   SIGMA_INTERNAL_TOKEN       Direct updates auth (kind/localdev HTTP)
+#   SIGMA_OIDC_CLIENT_ID + SIGMA_OIDC_CLIENT_SECRET + (SIGMA_OIDC_TOKEN_URL|SIGMA_OIDC_ISSUER)
 #
 # Optional:
 #   BUILD_DIR                  Yocto build dir (default: shared host build from resolve-cache-dirs)
@@ -36,16 +36,21 @@ case "${SIGMA_UPDATES_URL}" in
   http://*|https://*) ;;
   *)
     echo "error: SIGMA_UPDATES_URL must be an absolute http(s) URL, got: ${SIGMA_UPDATES_URL}" >&2
-    echo "hint: set repo variable SIGMA_IDENTITY_PUBLIC_URL (workflow appends /api)" >&2
+    echo "hint: set SIGMA_UPDATES_PUBLISH_URL or SIGMA_IDENTITY_PUBLIC_URL" >&2
     exit 1
     ;;
 esac
-if [[ -z "${SIGMA_OIDC_CLIENT_ID:-}" || -z "${SIGMA_OIDC_CLIENT_SECRET:-}" ]]; then
-  echo "error: SIGMA_OIDC_CLIENT_ID and SIGMA_OIDC_CLIENT_SECRET are required" >&2
-  exit 1
+
+has_token=0
+has_oidc=0
+[[ -n "${SIGMA_INTERNAL_TOKEN:-}" ]] && has_token=1
+if [[ -n "${SIGMA_OIDC_CLIENT_ID:-}" && -n "${SIGMA_OIDC_CLIENT_SECRET:-}" ]]; then
+  if [[ -n "${SIGMA_OIDC_TOKEN_URL:-}" || -n "${SIGMA_OIDC_ISSUER:-}" ]]; then
+    has_oidc=1
+  fi
 fi
-if [[ -z "${SIGMA_OIDC_TOKEN_URL:-}" && -z "${SIGMA_OIDC_ISSUER:-}" ]]; then
-  echo "error: set SIGMA_OIDC_TOKEN_URL or SIGMA_OIDC_ISSUER" >&2
+if [[ "${has_token}" -eq 0 && "${has_oidc}" -eq 0 ]]; then
+  echo "error: set SIGMA_INTERNAL_TOKEN (direct updates) or OIDC client id/secret + issuer/token URL" >&2
   exit 1
 fi
 

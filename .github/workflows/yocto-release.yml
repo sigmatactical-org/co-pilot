@@ -75,11 +75,10 @@ jobs:
       - name: Publish product packages
         env:
           UPDATES_SRC: ${{ github.workspace }}/it/updates
-          SIGMA_UPDATES_URL: ${{ vars.SIGMA_IDENTITY_PUBLIC_URL }}/api
-          SIGMA_OIDC_CLIENT_ID: ${{ secrets.SIGMA_OIDC_CLIENT_ID }}
-          SIGMA_OIDC_CLIENT_SECRET: ${{ secrets.SIGMA_OIDC_CLIENT_SECRET }}
-          SIGMA_OIDC_TOKEN_URL: ${{ vars.SIGMA_OIDC_TOKEN_URL }}
-          SIGMA_OIDC_ISSUER: ${{ vars.SIGMA_OIDC_ISSUER }}
+          # Kind/localdev: HTTP updates + shared token (avoids rustls/mkcert UnknownIssuer).
+          # Production: set SIGMA_UPDATES_PUBLISH_URL to Identity …/api and use OIDC secrets instead.
+          SIGMA_UPDATES_URL: ${{ vars.SIGMA_UPDATES_PUBLISH_URL }}
+          SIGMA_INTERNAL_TOKEN: ${{ secrets.SIGMA_INTERNAL_TOKEN }}
         run: |
           chmod +x embedded/sigma-racer-wingman/scripts/ci/publish-product-debs.sh
           embedded/sigma-racer-wingman/scripts/ci/publish-product-debs.sh
