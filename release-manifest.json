@@ -4,16 +4,16 @@
   "channel": "dev",
   "repos": {
     "sigma-racer-wingman": {
-      "ref": "ad8c334774ff33a6873e04e494d76d1c6a3bab4a"
+      "ref": "b8dc00282b59b4225e259bd7a8a9112081168263"
     },
     "sigma-instrumentation": {
-      "ref": "ed8aa9ddd7aa515cea1cbc9206b0a7b838bd7363"
+      "ref": "8715e3a03656f0430334396d2059dc664baf1f42"
     },
     "sigma-racer-cluster": {
-      "ref": "263d8cc140759b74d4c65faab69d2e0fc0e867a9"
+      "ref": "61c9318e4769a951c8a9ba8f109d6f1bede788e5"
     },
     "sigma-racer-sidearm": {
-      "ref": "a4c04c8e1b8689847fcd2be5112625a16fa2fd21"
+      "ref": "189395e75096921c4cc12d5124019ff5b50dbf18"
     },
     "sigma-racer-telemetry": {
       "ref": "dfa61ebcce786a11ef0c85ff434e49028c0a17ba"
