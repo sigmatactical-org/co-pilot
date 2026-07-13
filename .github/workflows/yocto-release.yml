@@ -66,7 +66,6 @@ jobs:
         run: embedded/sigma-racer-wingman/scripts/ci/bitbake-release.sh
 
       - name: Checkout updates (CLI)
-        if: vars.SIGMA_IDENTITY_PUBLIC_URL != ''
         uses: actions/checkout@v5
         with:
           repository: sigmatactical-org/updates
@@ -74,7 +73,6 @@ jobs:
           fetch-depth: 1
 
       - name: Publish product packages
-        if: vars.SIGMA_IDENTITY_PUBLIC_URL != ''
         env:
           UPDATES_SRC: ${{ github.workspace }}/it/updates
           SIGMA_UPDATES_URL: ${{ vars.SIGMA_IDENTITY_PUBLIC_URL }}/api
@@ -111,7 +109,7 @@ jobs:
             OTA channel: `${{ steps.meta.outputs.channel }}`
             Image version: `${{ steps.meta.outputs.version }}`
 
-            Product `.deb` packages are published via `sigma-updates-cli` when `SIGMA_IDENTITY_PUBLIC_URL` is set.
+            Product `.deb` packages are published via `sigma-updates-cli` (OIDC → kind Identity).
             Image blobs are published to object storage when `SIGMA_PUBLISH_ARTIFACTS=true`.
             See `docs/CI.md` for catalog URLs and RAUC install steps.
           files: |
