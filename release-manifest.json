@@ -4,7 +4,7 @@
   "channel": "dev",
   "repos": {
     "sigma-racer-wingman": {
-      "ref": "61207805379d02d84e21fa7275c150c612a987f7"
+      "ref": "fbafc5a568ee2d1764d78dfb23699a590606d2fc"
     },
     "sigma-instrumentation": {
       "ref": "ed8aa9ddd7aa515cea1cbc9206b0a7b838bd7363"
