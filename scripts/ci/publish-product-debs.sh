@@ -32,6 +32,22 @@ if [[ ! -d "${DEPLOY_DEB}" ]]; then
 fi
 
 : "${SIGMA_UPDATES_URL:?SIGMA_UPDATES_URL is required (Identity …/api or updates base URL)}"
+case "${SIGMA_UPDATES_URL}" in
+  http://*|https://*) ;;
+  *)
+    echo "error: SIGMA_UPDATES_URL must be an absolute http(s) URL, got: ${SIGMA_UPDATES_URL}" >&2
+    echo "hint: set repo variable SIGMA_IDENTITY_PUBLIC_URL (workflow appends /api)" >&2
+    exit 1
+    ;;
+esac
+if [[ -z "${SIGMA_OIDC_CLIENT_ID:-}" || -z "${SIGMA_OIDC_CLIENT_SECRET:-}" ]]; then
+  echo "error: SIGMA_OIDC_CLIENT_ID and SIGMA_OIDC_CLIENT_SECRET are required" >&2
+  exit 1
+fi
+if [[ -z "${SIGMA_OIDC_TOKEN_URL:-}" && -z "${SIGMA_OIDC_ISSUER:-}" ]]; then
+  echo "error: set SIGMA_OIDC_TOKEN_URL or SIGMA_OIDC_ISSUER" >&2
+  exit 1
+fi
 
 ensure_cli() {
   if [[ -n "${SIGMA_UPDATES_CLI:-}" && -x "${SIGMA_UPDATES_CLI}" ]]; then

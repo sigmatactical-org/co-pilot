@@ -149,7 +149,7 @@ Configure on `sigma-racer-wingman`:
 | `SIGMA_OIDC_CLIENT_SECRET` | secret | Client secret |
 | `SIGMA_OIDC_TOKEN_URL` | variable | Token endpoint (preferred) |
 | `SIGMA_OIDC_ISSUER` | variable | Issuer URL if token URL unset (`…/realms/multcorp`) |
-| `SIGMA_IDENTITY_PUBLIC_URL` | variable | Identity public base (CLI uses `{url}/api`) |
+| `SIGMA_IDENTITY_PUBLIC_URL` | variable | Identity public base (CLI uses `{url}/api`). When unset, the release workflow skips product `.deb` publish. |
 
 Dev Keycloak ships client `sigma-updates-ci` with realm role `sigma-admin` on its service account (`identity/dev_realm.json`; also ensured by `platform/scripts/seed-keycloak-dev-users.sh`).
 
