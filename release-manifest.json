@@ -7,19 +7,19 @@
       "ref": "3cbe43e89262cd68b57b0943a6c40e0b841c2eb4"
     },
     "sigma-instrumentation": {
-      "ref": "8715e3a03656f0430334396d2059dc664baf1f42"
+      "ref": "830bed04efc356372a14e2cd13e5e9912925fa87"
     },
     "sigma-racer-cluster": {
-      "ref": "9a7f1318cf34a09a7f73327b5c90d9f0cd2d794f"
+      "ref": "417e35a20e14462233d44f7ca762dbea25f74917"
     },
     "sigma-racer-sidearm": {
-      "ref": "189395e75096921c4cc12d5124019ff5b50dbf18"
+      "ref": "f0b8f6917782e3de00e67a495d8f9879bb19cf1d"
     },
     "sigma-racer-telemetry": {
-      "ref": "dfa61ebcce786a11ef0c85ff434e49028c0a17ba"
+      "ref": "c05a4d59167a6d3db9e5ba6636d743005e940ae2"
     },
     "sigma-racer-vehicle": {
-      "ref": "6c7d10102e12f1ff300b57a3954abb336e31e31e"
+      "ref": "a0e128c81434cf1954d08d15f6f1916407eed7ed"
     }
   },
   "yocto_layers": {

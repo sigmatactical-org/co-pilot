@@ -61,7 +61,7 @@ do_compile() {
     export HOST_CC="${HOST_CC:-$CC}"
 
     # Build from inside the crate so rustup honours its rust-toolchain.toml
-    # (pins rustc 1.90.0 + rust-src for the M7 target). Invoking cargo from
+    # (pins rustc 1.97.0 + rust-src for the M7 target). Invoking cargo from
     # bitbake's task dir would select the host default toolchain instead, which
     # can miscompile the bounded dbc-rs buffers.
     cd "${SIGMA_RACER_SIDEARM_SRC}"

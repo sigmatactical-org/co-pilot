@@ -21,7 +21,7 @@ SRC_URI = " \
 
 require ${THISDIR}/sigma-telemetry-relay-crates.inc
 
-SRCREV = "dfa61ebcce786a11ef0c85ff434e49028c0a17ba"
+SRCREV = "c05a4d59167a6d3db9e5ba6636d743005e940ae2"
 
 S = "${WORKDIR}/git"
 
