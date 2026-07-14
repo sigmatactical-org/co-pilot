@@ -56,7 +56,7 @@ export SIGMA_BUILD_DIR=/path/to/build-virt
 
 ### Virt integration build
 
-Workflow: `.github/workflows/yocto-virt.yml`
+Workflow: `.github/workflows/ci.yml`
 
 - **Triggers:** `main` pushes (layer paths), PRs, weekly schedule, manual dispatch
 - **Target:** `sigma-racer-wingman-image-virt` (QEMU, no NXP BSP)
@@ -73,7 +73,7 @@ CI bitbake scripts call `prepare-bitbake.sh` after `setup-environment.sh` to kil
 
 ### Production release build
 
-Workflow: `.github/workflows/yocto-release.yml`
+Workflow: `.github/workflows/release.yml`
 
 - **Triggers:** tag `wingman-*`, manual dispatch
 - **Target:** `sigma-racer-wingman-image` (imx8mp)

@@ -1,4 +1,4 @@
-name: Yocto release
+name: Release
 
 on:
   push:
@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: yocto-release
+  group: release
   cancel-in-progress: false
 
 jobs:

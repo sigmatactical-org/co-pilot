@@ -1,4 +1,4 @@
-name: Yocto virt
+name: CI
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - "setup-environment.sh"
       - "release-manifest.json"
       - "kas.yml"
-      - ".github/workflows/yocto-virt.yml"
+      - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "meta-sigma-racer-wingman/**"
@@ -24,7 +24,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: yocto-virt-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
