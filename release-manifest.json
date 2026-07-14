@@ -1,10 +1,10 @@
 {
-  "distro_version": "1.0.0",
-  "image_version": "1.0.0",
+  "distro_version": "1.1.0",
+  "image_version": "1.1.0",
   "channel": "dev",
   "repos": {
     "sigma-racer-wingman": {
-      "ref": "093785aa60e43c04c71df7856019bbb3a1ec0d0d"
+      "ref": "96e96aad85330a5b120e3735efafc0555fdfc280"
     },
     "sigma-instrumentation": {
       "ref": "bf8ef378480dbdc51431eae8c8950c3b95c774a9"
