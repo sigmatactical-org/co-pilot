@@ -1,6 +1,6 @@
 {
-  "distro_version": "1.1.0",
-  "image_version": "1.1.0",
+  "distro_version": "1.1.1",
+  "image_version": "1.1.1",
   "channel": "dev",
   "repos": {
     "sigma-racer-wingman": {
