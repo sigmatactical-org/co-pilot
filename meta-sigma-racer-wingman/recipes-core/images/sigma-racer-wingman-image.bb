@@ -21,6 +21,9 @@ IMAGE_FEATURES += "${@'ssh-server-openssh tools-debug debug-tweaks' if d.getVar(
 
 # Boot splash is psplash (grey Sigma mark on black) — not the cluster UI.
 IMAGE_INSTALL:append = " psplash"
+# RAUC A/B boot flip: env tooling for the uboot backend + the service that
+# marks the booted slot good (resets the bootloader attempt counter).
+IMAGE_INSTALL:append = " libubootenv-bin rauc-mark-good"
 
 # Core platform — instrumentation is the sole UI application
 IMAGE_INSTALL = " \

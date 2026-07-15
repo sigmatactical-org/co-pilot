@@ -5,6 +5,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 SRC_URI = "file://system.conf \
            file://sigma-racer-wingman-ca.cert.pem \
           "
+SRC_URI:append:sigma-racer-wingman-imx8mp = " file://fw_env.config"
 
 S = "${WORKDIR}"
 
@@ -21,7 +22,13 @@ do_install() {
     install -m 0644 ${WORKDIR}/sigma-racer-wingman-ca.cert.pem ${D}${sysconfdir}/rauc/ca.cert.pem
 }
 
+# Where fw_setenv finds the U-Boot environment (RAUC's uboot backend).
+do_install:append:sigma-racer-wingman-imx8mp() {
+    install -m 0644 ${WORKDIR}/fw_env.config ${D}${sysconfdir}/fw_env.config
+}
+
 FILES:${PN} = "${sysconfdir}/rauc/"
+FILES:${PN}:append:sigma-racer-wingman-imx8mp = " ${sysconfdir}/fw_env.config"
 
 RPROVIDES:${PN} += "virtual-rauc-conf"
 RREPLACES:${PN} += "rauc-conf"

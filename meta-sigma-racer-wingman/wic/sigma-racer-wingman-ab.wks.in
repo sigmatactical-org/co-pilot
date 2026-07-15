@@ -3,9 +3,12 @@
 # Slot A and Slot B are identical rootfs partitions; boot partition holds
 # kernel + dtb. Data partition persists maps, logs, and SQLite databases.
 
-part --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --active --align 4096 --fixed-size ${SIGMA_RACER_WINGMAN_BOOT_PART_SIZE}
-part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_a --align 4096 --size 2048
-part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_b --align 4096 --size 2048
-part /data --ondisk mmcblk --fstype=ext4 --label data --align 4096 --size 4096
+# 8 MiB start keeps the raw area clear: imx-boot at 32 KiB and the U-Boot
+# environment at 0x700000 (7 MiB, 16 KiB — see CONFIG_ENV_OFFSET) live
+# before the first partition.
+part --source bootimg-partition --ondisk mmcblk --fstype=vfat --label boot --part-name boot --active --align 8192 --fixed-size ${SIGMA_RACER_WINGMAN_BOOT_PART_SIZE}
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_a --part-name rootfs_a --align 4096 --size 2048
+part / --source rootfs --ondisk mmcblk --fstype=ext4 --label rootfs_b --part-name rootfs_b --align 4096 --size 2048
+part /data --ondisk mmcblk --fstype=ext4 --label data --part-name data --align 4096 --size 4096
 
-bootloader --ptable msdos
+bootloader --ptable gpt
