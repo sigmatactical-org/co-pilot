@@ -41,6 +41,11 @@ SYSTEMD_DEFAULT_TARGET = "graphical.target"
 
 IMAGE_ROOTFS_EXTRA_SPACE = "524288"
 
+# The RAUC bundle (sigma-racer-wingman-bundle) consumes the raw rootfs as
+# ${IMAGE_LINK_NAME}.ext4; the i.MX BSP's IMAGE_FSTYPES default is wic-only,
+# so make sure the ext4 artifact is always produced alongside it.
+IMAGE_FSTYPES:append = " ext4"
+
 WIC_CREATE_EXTRA_ARGS = "--no-fstab-update"
 
 export IMAGE_BASENAME = "sigma-racer-wingman-image"
