@@ -43,7 +43,24 @@ setenv bootargs console=${console} root=PARTLABEL=${rauc_part} rootwait rw rauc.
 # U-Boot's board detection presets ${fdtfile} (imx8mp-evk.dtb on the EVK);
 # fall back to the machine's first devicetree when unset.
 test -n "${fdtfile}" || setenv fdtfile @FDTFILE@
+# Scratch load address for the HMP overlay blob — clear of Image (loadaddr),
+# base fdt (0x43000000), boot.scr (scriptaddr 0x43500000) and initrd_addr.
+test -n "${fdtovaddr}" || setenv fdtovaddr 0x47000000
 
 fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} Image
 fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdtfile}
+
+# Bring up the Cortex-M7 safety core: apply the HMP overlay so the
+# imx8mp-cm7 remoteproc node (mailboxes + reserved memory) is present. Linux
+# then loads sigma-racer-sidearm.elf onto it via sigma-racer-sidearm.service.
+# Without the overlay /sys/class/remoteproc/remoteproc0 never appears and the
+# M7 stays dark. Non-fatal: an overlay problem must not block the A-core boot.
+fdt addr ${fdt_addr}
+fdt resize 0x4000
+if fatload mmc ${mmcdev}:${mmcpart} ${fdtovaddr} sigma-racer-wingman-hmp.dtbo; then
+  fdt apply ${fdtovaddr} || echo "HMP: overlay apply failed — M7 will not start"
+else
+  echo "HMP: overlay not found in boot partition — M7 will not start"
+fi
+
 booti ${loadaddr} - ${fdt_addr}
