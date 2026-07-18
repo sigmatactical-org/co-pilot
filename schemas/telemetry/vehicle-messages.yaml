@@ -117,7 +117,12 @@ messages:
         Vehicle.Speed: 48
 
   Event:
-    description: Edge-triggered warnings and mode changes (not sampled every frame).
+    description: |
+      Edge-triggered warnings and mode changes (not sampled every frame).
+      Anomaly events (`signal_stale` … `dtc_appeared`) are raised by the
+      deterministic detector set in sigma-racer-telemetry's `anomaly` module;
+      their `ts` is the timestamp of the sample that triggered the edge, and
+      `data` carries the alert lifecycle fields described below.
     fields:
       event:
         type: string
@@ -132,19 +137,36 @@ messages:
           - tc_active
           - fuel_reserve
           - riding_mode_changed
+          # Anomaly detector alerts (sigma-racer-telemetry anomaly module):
+          - signal_stale
+          - not_charging
+          - coolant_overheat
+          - coolant_rising
+          - side_stand_interlock
+          - dtc_appeared
       vss:
         type: string
         description: Primary VSS path associated with the event.
       value:
         description: Optional payload (DTC code, new mode string, etc.).
+      data:
+        description: |
+          Anomaly events only — alert lifecycle fields:
+            state:    "raised" | "cleared"
+            severity: "ADVISORY" | "WARNING" | "CRITICAL"
+            message:  human-readable one-liner
     example:
       version: "0.1"
       msg: Event
       ts: "2026-07-05T20:00:01.500Z"
       seq: 1100
-      event: redline_enter
-      vss: Vehicle.Powertrain.CombustionEngine.IsRedline
-      value: true
+      event: coolant_overheat
+      vss: Vehicle.OBD.CoolantTemperature
+      value: 118
+      data:
+        state: raised
+        severity: CRITICAL
+        message: "Coolant 118 °C — overheating (limit 115 °C)"
 
   Heartbeat:
     description: sigma-racer-vehicle liveness; no VSS data.
