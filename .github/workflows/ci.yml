@@ -58,6 +58,11 @@ jobs:
 
       - uses: actions/checkout@v5
         with:
+          repository: sigmatactical-org/vss-map
+          path: embedded/vss-map
+
+      - uses: actions/checkout@v5
+        with:
           repository: sigmatactical-org/sigma-racer-vehicle
           path: embedded/sigma-racer-vehicle
 

@@ -16,5 +16,11 @@ do_configure:append() {
 
 	[patch."https://github.com/sigmatactical-org/sigma-racer-telemetry.git"]
 	sigma-racer-telemetry = { path = "${SIGMA_RACER_TELEMETRY_SRC}" }
+
+	[patch."ssh://git@github.com/sigmatactical-org/vss-map.git"]
+	vss-map = { path = "${SIGMA_VSS_MAP_SRC}" }
+
+	[patch."https://github.com/sigmatactical-org/vss-map.git"]
+	vss-map = { path = "${SIGMA_VSS_MAP_SRC}" }
 	EOF
 }

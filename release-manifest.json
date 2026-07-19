@@ -15,6 +15,9 @@
     "sigma-racer-sidearm": {
       "ref": "716234df6854d6c02af53f9bac00f0c5c9f25033"
     },
+    "vss-map": {
+      "ref": "6e495a09c3b3afc1258cdb95bf097852831514ef"
+    },
     "sigma-racer-telemetry": {
       "ref": "864e4d7b5d6843c1bd959c4790990633e1aebafa"
     },
