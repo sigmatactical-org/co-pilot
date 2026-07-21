@@ -8,6 +8,10 @@
 
 version: 0.1
 socket: /run/sigma-racer-wingman/vehicle.sock
+# Request/response maintenance queries use a separate socket so they stay fully
+# orthogonal to the write-only telemetry fan-out above (relay proxies mTLS
+# clients to it). See MaintenanceQuery / MaintenanceReport below.
+query_socket: /run/sigma-racer-wingman/vehicle-query.sock
 
 envelope:
   description: Common wrapper for every frame on the wire.
@@ -188,3 +192,32 @@ messages:
       msg: Goodbye
       ts: "2026-07-05T20:05:00.000Z"
       seq: 9999
+
+  # ── Request/response: database pull ──────────────────────────────────────
+  # These flow on the query_socket (above), NOT the telemetry fan-out. A client
+  # opens the socket, sends exactly one DatabaseQuery line, then reads the raw
+  # bytes of the bike's SQLite database until the bike closes the connection.
+  # The mTLS relay proxies shop-tool clients through to the bike-side query
+  # socket, streaming the bytes back unmodified. The shop tool opens the pulled
+  # database locally to read the maintenance log, error history, and metadata
+  # (schedule version, odometer) — so new on-bike tables need no new messages.
+
+  DatabaseQuery:
+    description: |
+      Shop tool → bike. Requests the entire on-bike SQLite database. Carries no
+      payload; the kind is the request.
+    direction: client-to-vehicle
+    example:
+      version: "0.1"
+      msg: DatabaseQuery
+      ts: "2026-07-05T20:10:00.000Z"
+      seq: 1
+
+  DatabaseResponse:
+    description: |
+      Bike → shop tool. NOT an NDJSON envelope: the raw bytes of a consistent
+      snapshot of the bike's SQLite database (produced with VACUUM INTO),
+      streamed until the connection closes. Tables: meta (schedule_version,
+      odometer_km, engine_hours), maintenance_log, error_history.
+    direction: vehicle-to-client
+    encoding: raw SQLite database file bytes (no envelope)

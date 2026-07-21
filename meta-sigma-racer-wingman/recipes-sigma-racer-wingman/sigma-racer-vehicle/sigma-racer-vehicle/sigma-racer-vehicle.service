@@ -15,6 +15,10 @@ Restart=on-failure
 RestartSec=2
 StandardOutput=journal
 StandardError=journal
+# Durable maintenance store (schedule version + service log). systemd creates
+# /var/lib/sigma-racer-wingman owned by vehicle:telemetry, surviving reboot.
+StateDirectory=sigma-racer-wingman
+StateDirectoryMode=0750
 
 [Install]
 WantedBy=multi-user.target

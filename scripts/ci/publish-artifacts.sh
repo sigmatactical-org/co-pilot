@@ -16,6 +16,7 @@ ARTIFACT_DIR="$(cd "$1" && pwd)"
 
 PREFIX="${SIGMA_ARTIFACT_PREFIX:-wingman}"
 CHANNEL="${SIGMA_UPDATES_CHANNEL:-dev}"
+MODEL="${SIGMA_VEHICLE_MODEL:-sigma-racer}"
 ALIAS="sigma-artifacts"
 
 ensure_mc() {
@@ -59,6 +60,9 @@ for f in "${ARTIFACT_DIR}"/*; do
       ;;
     catalog-latest.json)
       upload "${f}" "${PREFIX}/v1/channel/${CHANNEL}/latest"
+      ;;
+    maintenance-schedule.json)
+      upload "${f}" "${PREFIX}/v1/maintenance/${MODEL}/latest"
       ;;
     catalog/*) ;;
     *)

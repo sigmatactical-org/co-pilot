@@ -1,0 +1,42 @@
+{
+  "version": "2026.1",
+  "model": "sigma-racer",
+  "published": "",
+  "items": [
+    {
+      "id": "engine-oil",
+      "name": "Engine oil & filter",
+      "interval": { "every_km": 6000, "every_days": 365 }
+    },
+    {
+      "id": "air-filter",
+      "name": "Air filter element",
+      "interval": { "every_km": 18000 }
+    },
+    {
+      "id": "spark-plugs",
+      "name": "Spark plugs",
+      "interval": { "every_km": 24000 }
+    },
+    {
+      "id": "valve-clearance",
+      "name": "Valve clearance inspection",
+      "interval": { "every_km": 24000 }
+    },
+    {
+      "id": "coolant",
+      "name": "Engine coolant",
+      "interval": { "every_km": 24000, "every_days": 730 }
+    },
+    {
+      "id": "brake-fluid",
+      "name": "Brake fluid",
+      "interval": { "every_days": 730 }
+    },
+    {
+      "id": "final-drive",
+      "name": "Final drive / chain service",
+      "interval": { "every_km": 12000 }
+    }
+  ]
+}
