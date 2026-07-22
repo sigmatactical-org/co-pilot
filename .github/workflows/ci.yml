@@ -41,30 +41,17 @@ jobs:
           repository: sigmatactical-org/sigma-instrumentation
           path: embedded/sigma-instrumentation
 
+      # cluster, telemetry, sidearm, and vehicle now live in the sigma-racer
+      # monorepo; the recipes point at ${TOPDIR}/../../sigma-racer/<crate>.
       - uses: actions/checkout@v5
         with:
-          repository: sigmatactical-org/sigma-racer-cluster
-          path: embedded/sigma-racer-cluster
-
-      - uses: actions/checkout@v5
-        with:
-          repository: sigmatactical-org/sigma-racer-telemetry
-          path: embedded/sigma-racer-telemetry
-
-      - uses: actions/checkout@v5
-        with:
-          repository: sigmatactical-org/sigma-racer-sidearm
-          path: embedded/sigma-racer-sidearm
+          repository: sigmatactical-org/sigma-racer
+          path: embedded/sigma-racer
 
       - uses: actions/checkout@v5
         with:
           repository: sigmatactical-org/vss-map
           path: embedded/vss-map
-
-      - uses: actions/checkout@v5
-        with:
-          repository: sigmatactical-org/sigma-racer-vehicle
-          path: embedded/sigma-racer-vehicle
 
       - name: Bitbake virt image
         env:
